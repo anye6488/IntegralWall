@@ -6,12 +6,18 @@ import com.android.volley.VolleyError;
 import com.erm.integralwall.core.IResponseListener;
 import com.erm.integralwall.core.NetManager;
 import com.erm.integralwall.core.download.ResponseProgressListenerImpl;
+import com.erm.integralwall.core.receiver.AppReceiver;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
 public class MainActivity extends Activity {
+
+	private AppReceiver mAppReceiver;
+	private IntentFilter mIntentFilter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,24 @@ public class MainActivity extends Activity {
 				
 			}
 		});
+		
+		mAppReceiver = new AppReceiver();
+		
+		mIntentFilter = new IntentFilter();
+		//---APK安装的Action
+		mIntentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+		//---APK安装的升级Action
+		mIntentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+		//---APK卸载的Action
+		mIntentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+		registerReceiver(mAppReceiver, mIntentFilter);
 	}
-
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		unregisterReceiver(mAppReceiver);
+	}
+	
 }
