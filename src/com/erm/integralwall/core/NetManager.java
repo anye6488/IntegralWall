@@ -2,6 +2,7 @@ package com.erm.integralwall.core;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -53,7 +54,7 @@ public class NetManager {
 	
 	
 	/**
-	 * 1.获取广告列表
+	 * 获取广告列表
 	 * @param listener 请求网络回调
 	 */
 	public void fetchAdvertsJsonByRequestParams(IResponseListener<JSONObject> listener){
@@ -65,8 +66,9 @@ public class NetManager {
 			throw new IllegalArgumentException();
 		}
 	}
+	
 	/**
-	 * 2.获取广告详情
+	 * 获取广告详情
 	 * @param listener 请求网络回调
 	 */
 	public void getchAdvertsDetailJsonByRequestParams(String adsID, IResponseListener<JSONObject> listener){
@@ -74,7 +76,52 @@ public class NetManager {
 			Map<String, String> map = mFormParams.getAdsListParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
 			
-			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_LIST_URL, map, listener);
+			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_DETAIL_URL, map, listener);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * 用户完成安装之后的调用的接口.
+	 * @param listener 请求网络回调
+	 */
+	public void notifyServerWhenInstalled(String adsID, IResponseListener<JSONObject> listener){
+		if(null != mNetOperator){
+			Map<String, String> map = mFormParams.getAdsListParamsMap();
+			map.put(Constant.ADVERTS_ID, adsID);
+			
+			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_HAS_INSTALLED_URL, map, listener);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * 用户完成任务的时候回调的接口.
+	 * @param listener 请求网络回调
+	 */
+	public void notifyServerWhenTaskFished(String adsID, IResponseListener<JSONObject> listener){
+		if(null != mNetOperator){
+			Map<String, String> map = mFormParams.getAdsListParamsMap();
+			map.put(Constant.ADVERTS_ID, adsID);
+			
+			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_TASK_FINISHED_URL, map, listener);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * 用户完成任务的时候回调的接口.
+	 * @param listener 请求网络回调
+	 */
+	public void fetchApkUrlByAdsID(String adsID, IResponseListener<JSONObject> listener){
+		if(null != mNetOperator){
+			Map<String, String> map = new HashMap<String, String>();
+			map.put(Constant.ADVERTS_ID, adsID);
+			
+			mNetOperator.fetchJsonByRequestParams(Constant.FETCH_APK_DOWNLOAD_URL, map, listener);
 		} else {
 			throw new IllegalArgumentException();
 		}

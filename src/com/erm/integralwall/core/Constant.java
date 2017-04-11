@@ -33,4 +33,13 @@ public class Constant {
     //---获取广告详情.
     public static final String ADVERTS_DETAIL_URL = "http://sdk.chinazmob.com/api/GetAdsList.php";
     public static final String ADVERTS_ID = "AdsId";
+    
+    //--用户完成安装的URL
+    public static final String WHEN_HAS_INSTALLED_URL = "http://sdk.chinazmob.com/api/FinishInstall.php";
+    
+    //--用户完成安装的URL
+    public static final String WHEN_TASK_FINISHED_URL = "http://sdk.chinazmob.com/api/FinishTask.php";
+    
+    //--获取APK的下载路劲的URL
+    public static final String FETCH_APK_DOWNLOAD_URL = "http://sdk.chinazmob.com/api/GetApkDown.php";
 }
