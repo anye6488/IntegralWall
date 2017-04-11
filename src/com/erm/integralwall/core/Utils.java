@@ -13,7 +13,7 @@ import android.net.Uri;
 public class Utils {
 	
 	public static void installApp(Context context, String path){
-		Intent intent = new Intent();    
+		Intent intent = new Intent(Intent.ACTION_VIEW);
         // 设置目标应用安装包路径    
         intent.setDataAndType(Uri.fromFile(new File(path)),    
                 "application/vnd.android.package-archive");    
