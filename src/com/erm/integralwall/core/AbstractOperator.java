@@ -21,5 +21,5 @@ import android.content.Context;
 	
 	public abstract void cancelAll();
 	 
-	public abstract void cancel(String url);
+	public abstract boolean cancel(String url);
 }

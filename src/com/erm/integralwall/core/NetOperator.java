@@ -121,15 +121,17 @@ public class NetOperator extends AbstractOperator{
 			mNewRequestQueue.cancelAll(NetOperator.class);
 	}
 	@Override
-	public void cancel(String url){
+	public boolean cancel(String url){
 		if(mapCache.size() <= 0)
 			throw new IllegalArgumentException("Map cache is null...");
 		
 		if(mapCache.containsKey(url)){
 			NetBzip netBzip = mapCache.get(url);
-			if(null != netBzip && null != netBzip.obj)
+			if(null != netBzip && null != netBzip.obj){
 				netBzip.obj.cancel();
-				
+				return true;
+			}
 		}
+		return false;
 	}
 }

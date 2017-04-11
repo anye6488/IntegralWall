@@ -91,12 +91,20 @@ public class NetManager {
 	}
 	
 	public void cancel(String url){
+		boolean flag = false;
 		if(null != mNetOperator)
-			mNetOperator.cancel(url);
+			flag = mNetOperator.cancel(url);
+		
+		if(null != mFileOperator && !flag)
+			mFileOperator.cancel(url);
+			
 	}
 	
 	public void cancelAll(){
 		if(null != mNetOperator)
 			mNetOperator.cancelAll();
+		
+		if(null != mFileOperator)
+			mFileOperator.cancelAll();
 	}
 }

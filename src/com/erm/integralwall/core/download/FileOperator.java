@@ -141,11 +141,14 @@ public class FileOperator extends AbstractOperator{
 	}
 	
 	@Override
-	public void cancel(String url){
+	public boolean cancel(String url){
 		if(null != mapCache && mapCache.containsKey(url)){
 			NetBzip netBzip = mapCache.remove(url);
 			netBzip.call.cancel();
+			return true;
 		}
+		
+		return false;
 	}
 	
 	@Override
