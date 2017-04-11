@@ -1,8 +1,5 @@
 package com.erm.integralwall.core;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -21,20 +18,16 @@ import com.erm.integralwall.core.params.NetBzip;
 import android.content.Context;
 import android.os.Handler;
 
-public class NetOperator {
+public class NetOperator extends AbstractOperator{
 
 	private static final String TAG = NetOperator.class.getSimpleName();
 	
-	private Reference<Context> mReference = null;
-
 	private RequestQueue mNewRequestQueue;
-	
-	private Map<String, NetBzip> mapCache = new HashMap<String, NetBzip>();
 	
 	private static final Handler mHandler= new Handler();
 	
 	public NetOperator(Context context){
-		mReference = new WeakReference<Context>(context);
+		super(context);
 		mNewRequestQueue = Volley.newRequestQueue(context);
 	}
 	
@@ -122,12 +115,12 @@ public class NetOperator {
 			};
 		}.start();
 	}
-	
+	@Override
 	public void cancelAll(){
 		if(null != mNewRequestQueue)
 			mNewRequestQueue.cancelAll(NetOperator.class);
 	}
-	
+	@Override
 	public void cancel(String url){
 		if(mapCache.size() <= 0)
 			throw new IllegalArgumentException("Map cache is null...");
@@ -139,5 +132,4 @@ public class NetOperator {
 				
 		}
 	}
-	
 }

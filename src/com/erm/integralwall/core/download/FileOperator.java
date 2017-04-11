@@ -4,26 +4,26 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import com.erm.integralwall.core.AbstractOperator;
+import com.erm.integralwall.core.params.NetBzip;
 
 import android.content.Context;
 import android.os.Environment;
 import android.os.Message;
-import android.util.Log;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class FileOperator {
-	
-	private Reference<Context> mReference = null;
+public class FileOperator extends AbstractOperator{
 	
 	public FileOperator(Context context){
-		mReference = new WeakReference<Context>(context);
+		super(context);
 	}
 	
 	private static final OkHttpClient client = new OkHttpClient.Builder()
@@ -36,7 +36,12 @@ public class FileOperator {
 	
 	public void download(String url, final String fileName, final IResponseProgressListener listener){
 		Request request = new Request.Builder().url(url).build();
-		client.newCall(request).enqueue(new Callback() {
+		Call newCall = client.newCall(request);
+		//---缓存
+		NetBzip netBzip = new NetBzip();
+		netBzip.call = newCall;
+		mapCache.put(url, netBzip);
+		newCall.enqueue(new Callback() {
 
 			@Override
 			public void onFailure(Call call, IOException e) {
@@ -134,4 +139,27 @@ public class FileOperator {
 		});
         	
 	}
+	
+	@Override
+	public void cancel(String url){
+		if(null != mapCache && mapCache.containsKey(url)){
+			NetBzip netBzip = mapCache.remove(url);
+			netBzip.call.cancel();
+		}
+	}
+	
+	@Override
+	public void cancelAll(){
+		if(null != mapCache && mapCache.size() > 0){
+			Set<String> keySet = mapCache.keySet();
+			Iterator<String> iterator = keySet.iterator();
+			while(iterator.hasNext()){
+				String next = iterator.next();
+				NetBzip netBzip =  mapCache.get(next);
+				netBzip.call.cancel();
+				iterator.remove();
+			}
+		}
+	}
+	
 }
