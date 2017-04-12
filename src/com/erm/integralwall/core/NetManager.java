@@ -29,6 +29,8 @@ public class NetManager {
 
 	private FileOperator mFileOperator;
 	
+	private IApkInstalledListener mApkInstalledListener;
+	
 	public static NetManager getInstance(){
 		if(null == mNetManager){
 			synchronized (NetManager.class) {
@@ -43,15 +45,15 @@ public class NetManager {
 	 * 创建该对象之后，紧接着必须调用该方法.
 	 * @param context
 	 */
-	public void inject(Context context){
+	public void inject(Context context, IApkInstalledListener listener){
 		/***/
+		mApkInstalledListener = listener;
 		mReference = new WeakReference<Context>(context);
 		mFormParams = new FormParams(context.getApplicationContext());
 		mNetOperator = new NetOperator(context);
 		
 		mFileOperator = new FileOperator(context);
 	}
-	
 	
 	/**
 	 * 获取广告列表
@@ -94,6 +96,22 @@ public class NetManager {
 			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_HAS_INSTALLED_URL, map, listener);
 		} else {
 			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * 用户完成任务的时候回调的接口.
+	 * @param pagekage 已经安装的APK包名
+	 */
+	public void notifyServerWhenTaskFinished(String pagekage){
+		/**Skip if listener or callback is not null,else do nothing*/
+		if(null == mApkInstalledListener && null == mApkInstalledListener.getMapOfPakageAndAdsID())
+			return;
+		
+		Map<String, String> map = mApkInstalledListener.getMapOfPakageAndAdsID();
+		if(map.containsKey(pagekage)){
+			String AdsId = map.get(pagekage);
+			notifyServerWhenTaskFinished(AdsId, null);
 		}
 	}
 	

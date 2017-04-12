@@ -1,9 +1,11 @@
 package com.erm.integralwall;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
+import com.erm.integralwall.core.IApkInstalledListener;
 import com.erm.integralwall.core.IResponseListener;
 import com.erm.integralwall.core.NetManager;
 import com.erm.integralwall.core.download.ResponseProgressListenerImpl;
@@ -22,7 +24,14 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		NetManager.getInstance().inject(this);
+		NetManager.getInstance().inject(this, new IApkInstalledListener() {
+			
+			@Override
+			public Map<String, String> getMapOfPakageAndAdsID() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
 		
 		//--获取广告列表.
 		findViewById(R.id.adsList).setOnClickListener(new OnClickListener() {
