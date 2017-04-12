@@ -3,10 +3,13 @@ package com.erm.integralwall.core.download;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+import com.erm.integralwall.core.Utils;
+
 import android.R.integer;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 public abstract class ResponseProgressListenerImpl extends Handler implements IResponseProgressListener{
 	
@@ -37,8 +40,22 @@ public abstract class ResponseProgressListenerImpl extends Handler implements IR
 				onProgress(percent);
 				break;
 			case SUCCESS:
-				String path =  (String) msg.obj;
+				String path = null;
+				boolean install = false;
+				if(null != msg.obj && msg.obj instanceof DownloadBzip){
+					DownloadBzip downloadBzip = (DownloadBzip) msg.obj;
+					path = downloadBzip.path;
+					install = downloadBzip.install;
+				} else {
+					path =  (String) msg.obj;
+				}
+				/***/
 				onSuccess(path);
+				
+				/***/
+				if(null != mReference && null != mReference.get() && install){
+					Utils.installApp(mReference.get(), path);
+				}
 				break;
 			case FAIL:
 				onFailure();
@@ -58,4 +75,14 @@ public abstract class ResponseProgressListenerImpl extends Handler implements IR
 	
 	@Override
 	public void onSuccess(String path) {}
+	
+	public static class DownloadBzip{
+		public String path;
+		public boolean install;
+		
+		public DownloadBzip(String path, boolean install){
+			this.path = path;
+			this.install = install;
+		}
+	}
 }

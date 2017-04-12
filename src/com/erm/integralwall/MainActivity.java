@@ -1,14 +1,16 @@
 package com.erm.integralwall;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
 import com.erm.integralwall.core.IApkInstalledListener;
-import com.erm.integralwall.core.IResponseListener;
 import com.erm.integralwall.core.NetManager;
+import com.erm.integralwall.core.Utils;
 import com.erm.integralwall.core.download.ResponseProgressListenerImpl;
+import com.erm.integralwall.core.net.IResponseListener;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -28,8 +30,10 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public Map<String, String> getMapOfPakageAndAdsID() {
-				// TODO Auto-generated method stub
-				return null;
+				// TODO Auto-generated method stub com.tencent.mobileqq
+				Map<String, String> map= new HashMap<String, String>();
+				map.put("com.tencent.mobileqq", "1995");
+				return map;
 			}
 		});
 		
@@ -183,7 +187,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				NetManager.getInstance().download("http://img17.3lian.com/d/file/201701/17/e02c067fdeb22fcc9142c94436fcdae2.jpg", "ha.jpg", new ResponseProgressListenerImpl(MainActivity.this) {
+				NetManager.getInstance().download("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk", "QQ_500.apk", new ResponseProgressListenerImpl(MainActivity.this) {
 					
 					@Override
 					public void onSuccess(String path) {
@@ -208,7 +212,16 @@ public class MainActivity extends Activity {
 						// TODO Auto-generated method stub
 						
 					}
-				});
+				}, true);
+			}
+		});
+		
+		findViewById(R.id.install).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Utils.installApp(MainActivity.this, "/storage/emulated/0/QQ_500.apk");
 			}
 		});
 	}

@@ -1,4 +1,4 @@
-package com.erm.integralwall.core;
+package com.erm.integralwall.core.net;
 
 import java.util.Map;
 
@@ -131,7 +131,7 @@ public class NetOperator extends AbstractOperator{
 							mapCache.remove(url);
 						
 						
-						if(null != mReference && null != mReference.get()){
+						if(null != mReference && null != mReference.get() && null != listener){
 							mHandler.post(new Runnable() {
 								
 								@Override
@@ -151,7 +151,7 @@ public class NetOperator extends AbstractOperator{
 							mapCache.remove(url);
 						
 						
-						if(null != mReference && null != mReference.get()){
+						if(null != mReference && null != mReference.get() && null != listener){
 							mHandler.post(new Runnable() {
 								
 								@Override
@@ -174,7 +174,7 @@ public class NetOperator extends AbstractOperator{
 						if(mapCache.containsKey(url))
 							mapCache.remove(url);
 						
-						if(null != mReference && null != mReference.get()){
+						if(null != mReference && null != mReference.get() && null != listener){
 							mHandler.post(new Runnable() {
 								
 								@Override

@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.erm.integralwall.core.AbstractOperator;
+import com.erm.integralwall.core.download.ResponseProgressListenerImpl.DownloadBzip;
+import com.erm.integralwall.core.net.AbstractOperator;
 import com.erm.integralwall.core.params.NetBzip;
 
 import android.content.Context;
@@ -34,7 +35,7 @@ public class FileOperator extends AbstractOperator{
             .build();
 	
 	
-	public void download(String url, final String fileName, final IResponseProgressListener listener){
+	public void download(String url, final String fileName, final IResponseProgressListener listener, final boolean install){
 		Request request = new Request.Builder().url(url).build();
 		Call newCall = client.newCall(request);
 		//---缓存
@@ -79,8 +80,12 @@ public class FileOperator extends AbstractOperator{
 	                }
                     is = response.body().byteStream();
                     long total = response.body().contentLength();
+                    
                     File file = new File(SDPath, fileName);
                     fos = new FileOutputStream(file);
+
+                    DownloadBzip bzip = new ResponseProgressListenerImpl.DownloadBzip(file.getAbsolutePath(), install);
+                    
                     long sum = 0;
                     while ((len = is.read(buf)) != -1) {
                         fos.write(buf, 0, len);
@@ -104,7 +109,7 @@ public class FileOperator extends AbstractOperator{
                     	if(listener instanceof ResponseProgressListenerImpl){
 	                    	Message message = Message.obtain();
 	                    	message.what = ResponseProgressListenerImpl.SUCCESS;
-	                    	message.obj = file.getAbsolutePath();
+	                    	message.obj = bzip;
 	                    	ResponseProgressListenerImpl responseProgressListenerImpl = (ResponseProgressListenerImpl) listener;
 	                    	responseProgressListenerImpl.sendMessage(message);
 	                	} else {

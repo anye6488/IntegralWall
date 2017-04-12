@@ -7,11 +7,15 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.android.volley.VolleyError;
 import com.erm.integralwall.core.download.FileOperator;
 import com.erm.integralwall.core.download.IResponseProgressListener;
+import com.erm.integralwall.core.net.IResponseListener;
+import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
 
 import android.content.Context;
+import android.util.Log;
 
 public class NetManager {
 	
@@ -74,6 +78,7 @@ public class NetManager {
 	 * @param listener 请求网络回调
 	 */
 	public void fetchAdvertsDetailJsonByRequestParams(String adsID, IResponseListener<JSONObject> listener){
+		Log.d(TAG, "download have finished, next to notify server.");
 		if(null != mNetOperator){
 			Map<String, String> map = mFormParams.getAdsListParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
@@ -103,15 +108,22 @@ public class NetManager {
 	 * 用户完成任务的时候回调的接口.
 	 * @param pagekage 已经安装的APK包名
 	 */
-	public void notifyServerWhenTaskFinished(String pagekage){
-		/**Skip if listener or callback is not null,else do nothing*/
-		if(null == mApkInstalledListener && null == mApkInstalledListener.getMapOfPakageAndAdsID())
+	public void notifyServerWhenInstalled(String pagekage){
+		/***/
+		if(null == mReference && null == mReference.get()){
+			Log.d(TAG, "App can have exited or have lower momery...");
 			return;
+		}
+		
+		/**Skip if listener or callback is not null,else do nothing*/
+		if(null == mApkInstalledListener || null == mApkInstalledListener.getMapOfPakageAndAdsID()){
+			return;
+		}
 		
 		Map<String, String> map = mApkInstalledListener.getMapOfPakageAndAdsID();
 		if(map.containsKey(pagekage)){
 			String AdsId = map.get(pagekage);
-			notifyServerWhenTaskFinished(AdsId, null);
+			notifyServerWhenInstalled(AdsId, null);
 		}
 	}
 	
@@ -149,10 +161,10 @@ public class NetManager {
 	 * 文件下载
 	 * @param url
 	 */
-	public void download(String url, String fileName, IResponseProgressListener listener){
+	public void download(String url, String fileName, IResponseProgressListener listener, boolean install){
 		
 		if(null != mFileOperator)
-			mFileOperator.download(url, fileName, listener);
+			mFileOperator.download(url, fileName, listener, install);
 	}
 	
 	public void cancel(String url){
