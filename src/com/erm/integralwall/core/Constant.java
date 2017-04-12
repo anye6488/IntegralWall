@@ -31,7 +31,7 @@ public class Constant {
     public static final String APP_CODE = "e9ff112bc855bf4z";
     
     //---获取广告详情.
-    public static final String ADVERTS_DETAIL_URL = "http://sdk.chinazmob.com/api/GetAdsList.php";
+    public static final String ADVERTS_DETAIL_URL = "http://sdk.chinazmob.com/api/GetAdsInfo.php";
     public static final String ADVERTS_ID = "AdsId";
     
     //--用户完成安装的URL

@@ -71,7 +71,7 @@ public class NetManager {
 	 * 获取广告详情
 	 * @param listener 请求网络回调
 	 */
-	public void getchAdvertsDetailJsonByRequestParams(String adsID, IResponseListener<JSONObject> listener){
+	public void fetchAdvertsDetailJsonByRequestParams(String adsID, IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
 			Map<String, String> map = mFormParams.getAdsListParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
@@ -101,7 +101,7 @@ public class NetManager {
 	 * 用户完成任务的时候回调的接口.
 	 * @param listener 请求网络回调
 	 */
-	public void notifyServerWhenTaskFished(String adsID, IResponseListener<JSONObject> listener){
+	public void notifyServerWhenTaskFinished(String adsID, IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
 			Map<String, String> map = mFormParams.getAdsListParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
