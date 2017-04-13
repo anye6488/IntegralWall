@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.erm.integralwall.core.Utils;
 import com.erm.integralwall.core.download.ResponseProgressListenerImpl.DownloadBzip;
 import com.erm.integralwall.core.net.AbstractOperator;
 import com.erm.integralwall.core.params.NetBzip;
@@ -15,6 +16,7 @@ import com.erm.integralwall.core.params.NetBzip;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Message;
+import android.text.TextUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -22,6 +24,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class FileOperator extends AbstractOperator{
+	
+	private static final String SUFFIX = ".tpk";
 	
 	public FileOperator(Context context){
 		super(context);
@@ -35,7 +39,25 @@ public class FileOperator extends AbstractOperator{
             .build();
 	
 	
-	public void download(final String url, final String fileName, final IResponseProgressListener listener, final boolean install){
+	public void openOrDownload(final String url, final String path,final String fileName, final IResponseProgressListener listener, final boolean install){
+		/**check to download file is exist?*/
+		if(TextUtils.isEmpty(path)){
+			throw new IllegalArgumentException("path argus is null....");
+		}
+		String absolutePath = null;
+		if(!path.endsWith("/")){
+			absolutePath = path + "/" + fileName;
+		} else{
+			absolutePath = path + fileName;
+		}
+		
+		if(Utils.isApkExist(absolutePath)){
+			if(null != mReference && null != mReference.get()){
+				Utils.installApp(mReference.get(), absolutePath);
+			}
+			return;
+		}
+		
 		/***/
 		if(null != mapCache && mapCache.containsKey(url)){
 			return;
@@ -71,7 +93,7 @@ public class FileOperator extends AbstractOperator{
                 byte[] buf = new byte[2048];
                 int len = 0;
                 FileOutputStream fos = null;
-                String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                
                 try {
                 	//---开始下载.
                 	if(null != listener){
@@ -86,12 +108,10 @@ public class FileOperator extends AbstractOperator{
 	                }
                     is = response.body().byteStream();
                     long total = response.body().contentLength();
-                    
-                    File file = new File(SDPath, fileName);
+                    /**mark file*/
+                    File file = new File(path, fileName + SUFFIX);
                     fos = new FileOutputStream(file);
 
-                    DownloadBzip bzip = new ResponseProgressListenerImpl.DownloadBzip(file.getAbsolutePath(), install);
-                    
                     long sum = 0;
                     while ((len = is.read(buf)) != -1) {
                         fos.write(buf, 0, len);
@@ -112,6 +132,12 @@ public class FileOperator extends AbstractOperator{
                     }
                     fos.flush();
                     if(null != listener){//---下载成功.
+                    	File waitingRenameFile = new File(path, fileName);
+                        
+                    	DownloadBzip bzip = new ResponseProgressListenerImpl.DownloadBzip(waitingRenameFile.getAbsolutePath(), install);
+                        
+                        /**remove mark,indicate download have finish*/
+                    	file.renameTo(waitingRenameFile);
                     	mapCache.remove(url);
                     	if(listener instanceof ResponseProgressListenerImpl){
 	                    	Message message = Message.obtain();

@@ -13,6 +13,7 @@ import com.erm.integralwall.core.net.IResponseListener;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -211,7 +212,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				NetManager.getInstance().download("http://down.chinazmob.com/.apk?e=1492053314&token=VBn3cnXRMNNVyWRa_OSNRfNKSnDtJqaQsXqFTL4P:WuyYqF0CPn0JjxhJoAgsCP53MB0=", "QQ_500.apk", new ResponseProgressListenerImpl(MainActivity.this) {
+				String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+				NetManager.getInstance().openOrDownload("http://down.chinazmob.com/.apk?e=1492053314&token=VBn3cnXRMNNVyWRa_OSNRfNKSnDtJqaQsXqFTL4P:WuyYqF0CPn0JjxhJoAgsCP53MB0=",
+						SDPath, "QQ_500.apk", new ResponseProgressListenerImpl(MainActivity.this) {
 					
 					@Override
 					public void onSuccess(String path) {

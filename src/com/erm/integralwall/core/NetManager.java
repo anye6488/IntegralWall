@@ -15,6 +15,7 @@ import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -182,10 +183,12 @@ public class NetManager {
 	 * 文件下载
 	 * @param url
 	 */
-	public void download(String url, String fileName, IResponseProgressListener listener, boolean install){
-		
+	public void openOrDownload(String url, String path, String fileName, IResponseProgressListener listener, boolean install){
+		if(TextUtils.isEmpty(path) || TextUtils.isEmpty(url) || TextUtils.isEmpty(fileName)){
+			throw new IllegalArgumentException("url or path, filename is not allow null...");
+		}
 		if(null != mFileOperator)
-			mFileOperator.download(url, fileName, listener, install);
+			mFileOperator.openOrDownload(url, path, fileName, listener, install);
 	}
 	
 	public void cancel(String url){

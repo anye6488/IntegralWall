@@ -54,7 +54,8 @@ public abstract class ResponseProgressListenerImpl extends Handler implements IR
 				
 				/***/
 				if(null != mReference && null != mReference.get() && install){
-					Utils.installApp(mReference.get(), path);
+					if(Utils.isValidApk(path))
+						Utils.installApp(mReference.get(), path);
 				}
 				break;
 			case FAIL:

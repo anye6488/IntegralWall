@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.text.TextUtils;
 
 public class Utils {
 	
@@ -39,23 +40,21 @@ public class Utils {
         return pName.contains(packageName);  
     } 
 	
-	public static String map2Json(Map<String, String> map) {
-//		JSONObject jsonobj = new JSONObject();
-		JSONObject jsonObject = new JSONObject(map);
-		String json = jsonObject.toString();
-		return json;
+	public static boolean isValidApk(String path){
+		if(null == path)
+			return false;
+		/**.apk占4位长度*/
+		if(path.length() < 4)
+			return false;
+		return path.endsWith(".apk");
 	}
 	
-	/**转换map成一个method 所需要的参数string.
-	 * @param map
-	 * @return
-	 */
-	public static String map2GetSting(Map<String , String> map){
-		if(null != map && map.size() > 0){
-			String methodGetStringTemp = map.toString().replaceAll(", ", "&");
-			if(methodGetStringTemp.length() > 2)
-				return methodGetStringTemp.substring(1, methodGetStringTemp.length() -1);
-		}
-		return null;
+	public static boolean isApkExist(String path){
+		
+		if(TextUtils.isEmpty(path))
+			return false;
+		
+		File file = new File(path);
+		return file.exists();
 	}
 }

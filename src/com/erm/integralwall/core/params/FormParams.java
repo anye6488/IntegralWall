@@ -37,7 +37,6 @@ public class FormParams {
 		
 		//---get all install package, but not system app.
 		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
-		Utils.map2Json(map);
         return map;
     }
     
