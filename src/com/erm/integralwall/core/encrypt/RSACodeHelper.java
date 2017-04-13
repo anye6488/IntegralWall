@@ -27,7 +27,7 @@ public class RSACodeHelper {
 	
 	private static final String TAG = RSACodeHelper.class.getSimpleName();
 	
-	private static final String RSA_PUBLIC_KEY = "";
+	private static final String RSA_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCoXbk+id3B5ko6/NrNPCE6Cs9h+GETvxGp+jSUWXPARXQhXYbeJzo2w8dwFDrnkNHpFare/ad+VcL3eEWQC9wdF9oAkHmZeJN7l8D1swhEZTuZ0cyXBMtzcm92K2NJUYjWdssw+GqhfcI7uhTGMQ4bzYxZZJE/WoT3siwTMlQgiQIDAQAB";
 	private static final String RSA_PRIVATE_KEY = "";
 	
 	/**
