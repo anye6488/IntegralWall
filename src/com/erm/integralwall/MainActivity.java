@@ -182,7 +182,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				NetManager.getInstance().fetchApkUrlByAdsID("1995", new IResponseListener<JSONObject>() {
+				NetManager.getInstance().fetchApkUrlByAdsID("1698", new IResponseListener<JSONObject>() {
 					
 					@Override
 					public void onResponse(JSONObject jsonObject) {
@@ -211,7 +211,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				NetManager.getInstance().download("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk", "QQ_500.apk", new ResponseProgressListenerImpl(MainActivity.this) {
+				NetManager.getInstance().download("http://down.chinazmob.com/.apk?e=1492053314&token=VBn3cnXRMNNVyWRa_OSNRfNKSnDtJqaQsXqFTL4P:WuyYqF0CPn0JjxhJoAgsCP53MB0=", "QQ_500.apk", new ResponseProgressListenerImpl(MainActivity.this) {
 					
 					@Override
 					public void onSuccess(String path) {

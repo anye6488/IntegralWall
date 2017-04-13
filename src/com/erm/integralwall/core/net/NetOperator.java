@@ -1,5 +1,6 @@
 package com.erm.integralwall.core.net;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -122,7 +123,7 @@ public class NetOperator extends AbstractOperator{
 		
 		new Thread(){
 			public void run() {
-				JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.POST, url, new Listener<JSONObject>() {
+				JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(map), new Listener<JSONObject>() {
 
 					@Override
 					public void onResponse(final JSONObject jsonObject) {
@@ -163,10 +164,6 @@ public class NetOperator extends AbstractOperator{
 						}
 					}
 				}){
-					@Override
-					protected Map<String, String> getParams() throws AuthFailureError {
-						return map;
-					}
 					
 					@Override
 					public void cancel() {
