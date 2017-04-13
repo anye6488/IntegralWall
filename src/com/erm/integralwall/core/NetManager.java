@@ -7,11 +7,16 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.android.volley.VolleyError;
 import com.erm.integralwall.core.download.FileOperator;
 import com.erm.integralwall.core.download.IResponseProgressListener;
+import com.erm.integralwall.core.net.IResponseListener;
+import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 public class NetManager {
 	
@@ -29,6 +34,8 @@ public class NetManager {
 
 	private FileOperator mFileOperator;
 	
+	private IApkInstalledListener mApkInstalledListener;
+	
 	public static NetManager getInstance(){
 		if(null == mNetManager){
 			synchronized (NetManager.class) {
@@ -43,15 +50,15 @@ public class NetManager {
 	 * 创建该对象之后，紧接着必须调用该方法.
 	 * @param context
 	 */
-	public void inject(Context context){
+	public void inject(Context context, IApkInstalledListener listener){
 		/***/
+		mApkInstalledListener = listener;
 		mReference = new WeakReference<Context>(context);
 		mFormParams = new FormParams(context.getApplicationContext());
 		mNetOperator = new NetOperator(context);
 		
 		mFileOperator = new FileOperator(context);
 	}
-	
 	
 	/**
 	 * 获取广告列表
@@ -71,7 +78,8 @@ public class NetManager {
 	 * 获取广告详情
 	 * @param listener 请求网络回调
 	 */
-	public void getchAdvertsDetailJsonByRequestParams(String adsID, IResponseListener<JSONObject> listener){
+	public void fetchAdvertsDetailJsonByRequestParams(String adsID, IResponseListener<JSONObject> listener){
+		Log.d(TAG, "download have finished, next to notify server.");
 		if(null != mNetOperator){
 			Map<String, String> map = mFormParams.getAdsListParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
@@ -99,9 +107,52 @@ public class NetManager {
 	
 	/**
 	 * 用户完成任务的时候回调的接口.
+	 * @param pagekage 已经安装的APK包名
+	 */
+	public void notifyServerWhenInstalled(String pagekage){
+		/***/
+		if(null == mReference && null == mReference.get()){
+			Log.d(TAG, "App can have exited or have lower momery...");
+			return;
+		}
+		
+		/**Skip if listener or callback is not null,else do nothing*/
+		if(null == mApkInstalledListener || null == mApkInstalledListener.getMapOfPakageAndAdsID()){
+			return;
+		}
+		
+		Map<String, String> map = mApkInstalledListener.getMapOfPakageAndAdsID();
+		if(map.containsKey(pagekage)){
+			String AdsId = map.get(pagekage);
+			notifyServerWhenInstalled(AdsId, new IResponseListener<JSONObject>() {
+
+				@Override
+				public void onResponse(JSONObject t) {
+					// TODO Auto-generated method stub
+					if(null != mReference && null != mReference.get())
+					Toast.makeText(mReference.get(), t.toString(), Toast.LENGTH_LONG).show();
+				}
+
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void cancel() {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
+	}
+	
+	/**
+	 * 用户完成任务的时候回调的接口.
 	 * @param listener 请求网络回调
 	 */
-	public void notifyServerWhenTaskFished(String adsID, IResponseListener<JSONObject> listener){
+	public void notifyServerWhenTaskFinished(String adsID, IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
 			Map<String, String> map = mFormParams.getAdsListParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
@@ -131,10 +182,10 @@ public class NetManager {
 	 * 文件下载
 	 * @param url
 	 */
-	public void download(String url, String fileName, IResponseProgressListener listener){
+	public void download(String url, String fileName, IResponseProgressListener listener, boolean install){
 		
 		if(null != mFileOperator)
-			mFileOperator.download(url, fileName, listener);
+			mFileOperator.download(url, fileName, listener, install);
 	}
 	
 	public void cancel(String url){

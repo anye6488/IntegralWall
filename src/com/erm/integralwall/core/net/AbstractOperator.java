@@ -1,4 +1,4 @@
-package com.erm.integralwall.core;
+package com.erm.integralwall.core.net;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

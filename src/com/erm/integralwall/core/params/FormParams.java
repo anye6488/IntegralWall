@@ -6,8 +6,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.erm.integralwall.core.Constant;
-import com.erm.integralwall.core.encrypt.Compression;
-import com.erm.integralwall.core.encrypt.RSACodeHelper;
+import com.erm.integralwall.core.Utils;
 
 /**
  * 作者：liemng on 2017/3/31
@@ -38,7 +37,7 @@ public class FormParams {
 		
 		//---get all install package, but not system app.
 		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
-		
+		Utils.map2Json(map);
         return map;
     }
     
@@ -55,35 +54,6 @@ public class FormParams {
 		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
 		
         return map;
-    }
-
-    /**
-     * 获取手机的配置信息，用于标识一部手机.
-     *
-     * @return
-     */
-    public String getFormParams() {
-        String result;
-        try {
-            String[] _param = { "IMEI", "IMSI", "AndroidId", "Phone", "Other",
-                    "Version", "Model", "NetType", "SysVer", "Operator",
-                    "AppCode", "Mac","Brand","Resolution" };
-            String[] _values = { mPhoneInfo.getPhoneIMEI(), mPhoneInfo.getPhoneIMSI(),
-                    mPhoneInfo.getPhoneID(), "", Constant.USER_ID,
-                    Constant.VERSION, mPhoneInfo.getPhoneModels(),
-                    mPhoneInfo.getNetWorkType(), mPhoneInfo.getPhoneVersion(),
-                    mPhoneInfo.getOperators(), Constant.ADP_CODE,
-                    mPhoneInfo.getPhoneMAC(),mPhoneInfo.getPhoneBrand(),mPhoneInfo.getResolution()};
-            JSONObject param = createJsonObj(_param, _values);
-            String[] _PARAM = { "FUNC", "PARAM" };
-            Object[] _VALUES = { "101001", param };
-            result = createJsonObj2String(_PARAM, _VALUES);
-        } catch (Exception e) {
-            result = "";
-        }
-        return RSACodeHelper.base64Enc(Compression
-                .getGZipCompressed(RSACodeHelper.sPubEncrypt(result)));
-
     }
 
     public JSONObject createJsonObj(String[] _param, String[] _values) {
