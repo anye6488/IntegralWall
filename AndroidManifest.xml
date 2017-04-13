@@ -33,6 +33,7 @@
             <intent-filter>  
                 <!-- 一个新应用包已经安装在设备上，数据包括包名（监听所在的app，新安装时，不能接收到这个广播） -->  
                 <action android:name="android.intent.action.PACKAGE_ADDED" />  
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />  
                 <data android:scheme="package" />  
             </intent-filter>  
       </receiver>  

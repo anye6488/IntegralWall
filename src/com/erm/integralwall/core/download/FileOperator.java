@@ -35,7 +35,12 @@ public class FileOperator extends AbstractOperator{
             .build();
 	
 	
-	public void download(String url, final String fileName, final IResponseProgressListener listener, final boolean install){
+	public void download(final String url, final String fileName, final IResponseProgressListener listener, final boolean install){
+		/***/
+		if(null != mapCache && mapCache.containsKey(url)){
+			return;
+		}
+		
 		Request request = new Request.Builder().url(url).build();
 		Call newCall = client.newCall(request);
 		//---缓存
@@ -47,6 +52,7 @@ public class FileOperator extends AbstractOperator{
 			@Override
 			public void onFailure(Call call, IOException e) {
 				// TODO Auto-generated method stub
+				mapCache.remove(url);
 				if(null != listener){//--下载失败.
 					if(listener instanceof ResponseProgressListenerImpl){
 	            		Message message = Message.obtain();
@@ -106,6 +112,7 @@ public class FileOperator extends AbstractOperator{
                     }
                     fos.flush();
                     if(null != listener){//---下载成功.
+                    	mapCache.remove(url);
                     	if(listener instanceof ResponseProgressListenerImpl){
 	                    	Message message = Message.obtain();
 	                    	message.what = ResponseProgressListenerImpl.SUCCESS;
@@ -117,6 +124,7 @@ public class FileOperator extends AbstractOperator{
 	                	}
                     }
                 } catch (Exception e) {
+                	mapCache.remove(url);
                 	if(null != listener){//---下载过程中失败.
                 		if(listener instanceof ResponseProgressListenerImpl){
                     		Message message = Message.obtain();

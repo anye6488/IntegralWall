@@ -12,10 +12,11 @@ public class AppReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
-		if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_ADDED)) {
+		if (TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_ADDED) 
+				|| TextUtils.equals(intent.getAction(), Intent.ACTION_PACKAGE_REPLACED)) {
 			String packageName = intent.getData().getSchemeSpecificPart();
 			NetManager.getInstance().notifyServerWhenInstalled(packageName);
-		} 
+		}
 	}
 
 }

@@ -1,27 +1,27 @@
 package com.erm.integralwall;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
 import com.erm.integralwall.core.IApkInstalledListener;
 import com.erm.integralwall.core.NetManager;
-import com.erm.integralwall.core.Utils;
 import com.erm.integralwall.core.download.ResponseProgressListenerImpl;
 import com.erm.integralwall.core.net.IResponseListener;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
-
+	
+	private TextView mAdverts = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,6 +37,8 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		mAdverts = (TextView) findViewById(R.id.ads_textview);
+		
 		//--获取广告列表.
 		findViewById(R.id.adsList).setOnClickListener(new OnClickListener() {
 			
@@ -49,6 +51,24 @@ public class MainActivity extends Activity {
 					public void onResponse(JSONObject jsonObject) {
 						// TODO Auto-generated method stub
 						System.out.println("fetchAdvertsJsonByRequestParams JSONObject: " + jsonObject);
+						
+//						try {
+//							JSONObject jsonObj = jsonObject.getJSONObject("1982");
+//							Advers advers = new Advers();
+//							advers.AdsId = jsonObj.getString("AdsId");
+//							advers.Title = jsonObj.getString("Title");
+//							advers.Logo = jsonObj.getString("Logo");
+//							advers.Size = jsonObj.getString("Size");
+//							advers.Detail = jsonObj.getString("Detail");
+//							advers.PackName = jsonObj.getString("PackName");
+//							advers.Price = jsonObj.getString("Price");
+//							advers.is_register = jsonObj.getString("is_register");
+							
+							mAdverts.setText(jsonObject.toString());
+//						} catch (JSONException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
 					}
 					
 					@Override
@@ -78,6 +98,7 @@ public class MainActivity extends Activity {
 					public void onResponse(JSONObject jsonObject) {
 						// TODO Auto-generated method stub
 						System.out.println("fetchAdvertsDetailJsonByRequestParams JSONObject: " + jsonObject);
+						mAdverts.setText(jsonObject.toString());
 					}
 					
 					@Override
@@ -107,6 +128,7 @@ public class MainActivity extends Activity {
 					public void onResponse(JSONObject jsonObject) {
 						// TODO Auto-generated method stub
 						System.out.println("notifyServerWhenTaskFinished JSONObject: " + jsonObject);
+						mAdverts.setText(jsonObject.toString());
 					}
 					
 					@Override
@@ -136,6 +158,7 @@ public class MainActivity extends Activity {
 					public void onResponse(JSONObject jsonObject) {
 						// TODO Auto-generated method stub
 						System.out.println("notifyServerWhenInstalled JSONObject: " + jsonObject);
+						mAdverts.setText(jsonObject.toString());
 					}
 					
 					@Override
@@ -165,6 +188,7 @@ public class MainActivity extends Activity {
 					public void onResponse(JSONObject jsonObject) {
 						// TODO Auto-generated method stub
 						System.out.println("fetchApkUrlByAdsID JSONObject: " + jsonObject);
+						mAdverts.setText(jsonObject.toString());
 					}
 					
 					@Override
@@ -205,6 +229,7 @@ public class MainActivity extends Activity {
 					public void onProgress(int percent) {
 						// TODO Auto-generated method stub
 						Log.d("onResponse", "progress=" + percent);
+						mAdverts.setText( "当前进度=" + percent +"%");
 					}
 					
 					@Override
@@ -216,14 +241,6 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		findViewById(R.id.install).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Utils.installApp(MainActivity.this, "/storage/emulated/0/QQ_500.apk");
-			}
-		});
 	}
 
 	
@@ -233,24 +250,4 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 	}
 	
-	private void releaseHandlers(){
-		   try {
-		      Class<?> clazz = getClass();
-		      Field[] fields = clazz.getDeclaredFields();
-		      if (fields == null || fields.length <= 0 ){
-		               return;
-		       }
-		      for (Field field: fields){
-		          field.setAccessible(true);
-		          if(!Handler.class.isAssignableFrom(field.getType())) continue;
-	              Handler handler = (Handler)field.get(this);
-	              if (handler != null && handler.getLooper() == Looper.getMainLooper()){
-	                 handler.removeCallbacksAndMessages(null);
-	              }
-	              field.setAccessible(false);
-		      }
-		   } catch (IllegalAccessException e) {
-		      e.printStackTrace();
-		   }
-		}
 }

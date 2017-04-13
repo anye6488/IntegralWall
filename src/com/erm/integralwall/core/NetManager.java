@@ -16,6 +16,7 @@ import com.erm.integralwall.core.params.FormParams;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 public class NetManager {
 	
@@ -123,7 +124,27 @@ public class NetManager {
 		Map<String, String> map = mApkInstalledListener.getMapOfPakageAndAdsID();
 		if(map.containsKey(pagekage)){
 			String AdsId = map.get(pagekage);
-			notifyServerWhenInstalled(AdsId, null);
+			notifyServerWhenInstalled(AdsId, new IResponseListener<JSONObject>() {
+
+				@Override
+				public void onResponse(JSONObject t) {
+					// TODO Auto-generated method stub
+					if(null != mReference && null != mReference.get())
+					Toast.makeText(mReference.get(), t.toString(), Toast.LENGTH_LONG).show();
+				}
+
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void cancel() {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 		}
 	}
 	
