@@ -35,9 +35,20 @@ public class FormParams {
 		map.put(Constant.IP, mPhoneInfo.getIPAddress());
 		map.put(Constant.SDK_VERSION, Constant.SDK_VERSION_CODE);
 		
-		//---get all install package, but not system app.
+		//--- 'false' get all install package, but not system app.
 		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
         return map;
+    }
+    
+    /**
+     * 获取基础手机参数.
+     * @return
+     */
+    public Map<String, String> getBaseParamsMap(){
+    	HashMap<String,String> map = new HashMap<String, String>();
+		map.put(Constant.ADP_CODE, Constant.APP_CODE);
+		map.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
+		return map;
     }
     
     /**

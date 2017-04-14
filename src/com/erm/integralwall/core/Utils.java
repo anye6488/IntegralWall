@@ -57,4 +57,9 @@ public class Utils {
 		File file = new File(path);
 		return file.exists();
 	}
+	
+	public static String transitionObj2JsonString(Map<String, String> map){
+		JSONObject jsonObject = new JSONObject(map);
+		return jsonObject.toString();
+	}
 }

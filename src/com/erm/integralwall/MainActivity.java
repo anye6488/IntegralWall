@@ -225,7 +225,7 @@ public class MainActivity extends Activity {
 					@Override
 					public void onStart() {
 						// TODO Auto-generated method stub
-						
+						Log.d("onStart", "======onStart=========");
 					}
 					
 					@Override

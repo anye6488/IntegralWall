@@ -1,13 +1,8 @@
 package com.erm.integralwall.core.net;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.json.JSONObject;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.Response.Listener;
@@ -119,11 +114,11 @@ public class NetOperator extends AbstractOperator{
 	 * @param map
 	 * @param listener
 	 */
-	public void fetchJsonByRequestParams(final String url, final Map<String, String> map,final IResponseListener<JSONObject> listener){
+	public void fetchJsonByRequestParams(final String url,final String jsonString,final IResponseListener<JSONObject> listener){
 		
 		new Thread(){
 			public void run() {
-				JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(map), new Listener<JSONObject>() {
+				JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonString/*new JSONObject(map)*/, new Listener<JSONObject>() {
 
 					@Override
 					public void onResponse(final JSONObject jsonObject) {

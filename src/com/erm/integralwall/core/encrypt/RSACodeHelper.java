@@ -1,6 +1,5 @@
 package com.erm.integralwall.core.encrypt;
 
-import java.io.FileOutputStream;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -46,7 +45,6 @@ public class RSACodeHelper {
 			cipher.init(Cipher.ENCRYPT_MODE, pubKey);  
 			cipherText = cipher.doFinal(str.getBytes());  
 			//加密后的东西  
-	        System.out.println("cipher: " + new String(cipherText));          
 	        return new String(cipherText);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -69,7 +67,6 @@ public class RSACodeHelper {
 			//开始解密  
 			cipher.init(Cipher.DECRYPT_MODE, privKey);   
 			byte[] plainText = cipher.doFinal(cipherText);  
-			System.out.println("plain : " + new String(plainText));
 			return new String(plainText);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
