@@ -201,7 +201,7 @@ public class NetOperator extends AbstractOperator{
 	@Override
 	public boolean cancel(String url){
 		if(mapCache.size() <= 0)
-			throw new IllegalArgumentException("Map cache is null...");
+			return false;
 		
 		if(mapCache.containsKey(url)){
 			NetBzip netBzip = mapCache.get(url);

@@ -213,7 +213,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-				NetManager.getInstance().openOrDownload("http://down.chinazmob.com/.apk?e=1492053314&token=VBn3cnXRMNNVyWRa_OSNRfNKSnDtJqaQsXqFTL4P:WuyYqF0CPn0JjxhJoAgsCP53MB0=",
+				NetManager.getInstance().openOrDownload("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk",
 						SDPath, "QQ_500.apk", new ResponseProgressListenerImpl(MainActivity.this) {
 					
 					@Override
@@ -244,6 +244,14 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		findViewById(R.id.cancel).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				NetManager.getInstance().cancel("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk");
+			}
+		});
 	}
 
 	
@@ -251,6 +259,7 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		NetManager.getInstance().cancelAll();
 	}
 	
 }
