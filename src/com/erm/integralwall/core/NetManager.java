@@ -66,7 +66,7 @@ public class NetManager {
 	 */
 	public void fetchAdvertsJsonByRequestParams(IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
-			Map<String, String> map = mFormParams.getAdsListParamsMap();
+			Map<String, String> map = mFormParams.getAdsListParamsMap("ArMn");
 			
 			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_LIST_URL, Utils.transitionObj2JsonString(map), listener);
 		} else {

@@ -26,6 +26,16 @@ public class Constant {
     public static final String IP = "IP";
     public static final String SDK_VERSION = "Version";
     public static final String PACKAGE = "PackName";
+    public static final String IMSI = "IMSI";
+    public static final String ANDROID_ID = "AndroidId";
+    public static final String SYSTEM_VERSION = "SysVer";
+    public static final String MODEL = "Model";/**手机型号*/
+    public static final String MAC = "Mac";
+    public static final String OPERATOR = "Operator";
+    public static final String NETTYPE = "NetType";
+    public static final String OTHER = "Other";/**开发者参数（开发者提供）*/
+    public static final String BRAND = "Brand";
+    public static final String RESOLUTION = "Resolution";
     
     public static final String SDK_VERSION_CODE = "1.2.1";
     public static final String APP_CODE = "e9ff112bc855bf4z";
