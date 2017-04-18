@@ -42,4 +42,7 @@ public class Constant {
     
     //--获取APK的下载路劲的URL
     public static final String FETCH_APK_DOWNLOAD_URL = "http://sdk.chinazmob.com/api/GetApkDown.php";
+    
+    //--获取APK的下载路劲的URL
+    public static final String FETCH_TASK_TIME_URL = "http:// sdk.chinazmob.com/api/ GetAdsTime.php";
 }

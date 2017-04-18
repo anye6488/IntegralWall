@@ -169,6 +169,21 @@ public class NetManager {
 	}
 	
 	/**
+	 * 根据广告ID获取任务时长
+	 * @param listener 请求网络回调
+	 */
+	public void fetchTaskTimeByAdsID(String adsID, IResponseListener<JSONObject> listener){
+		if(null != mNetOperator){
+			Map<String, String> map = new HashMap<String, String>();
+			map.put(Constant.ADVERTS_ID, adsID);
+			
+			mNetOperator.fetchJsonByRequestParams(Constant.FETCH_TASK_TIME_URL, Utils.transitionObj2JsonString(map), listener);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
 	 * 文件下载，如果存在就直接安装.
 	 * @param url
 	 */
