@@ -9,7 +9,7 @@ public class Constant {
     public static final String VERSION = "1.2.1";//版本
 
     // 秘钥
-    public static String ADP_CODE = "e9ff112bc855bf4c";
+    public static String ADP_CODE = "AppCode";
 
     // 用户ID，用于记录开发者应用的唯一用户标识,default为空.
     public static String USER_ID = "";
