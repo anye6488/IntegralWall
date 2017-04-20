@@ -105,8 +105,8 @@ public class NetManager {
 			try {
 				obj2JsonString = RSACodeHelper.encode(RSACodeHelper.encryptByPublicKey(obj2JsonString.getBytes()));
 				
-				String decrypt = new String(RSACodeHelper.decryptByPrivateKey(RSACodeHelper.decode(obj2JsonString)));
-				Log.d(TAG, "notifyServerWhenInstalled decrypt: " + decrypt);
+//				String decrypt = new String(RSACodeHelper.decryptByPrivateKey(RSACodeHelper.decode(obj2JsonString)));
+//				Log.d(TAG, "notifyServerWhenInstalled decrypt: " + decrypt);
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -154,9 +154,16 @@ public class NetManager {
 			String obj2JsonString = Utils.transitionObj2JsonString(map);
 			
 			/**enable encrypt*/
-			obj2JsonString = RSACodeHelper.encrypt(obj2JsonString);
-			
-			String decrypt = RSACodeHelper.decrypt(obj2JsonString);
+			try {
+				obj2JsonString = RSACodeHelper.encode(RSACodeHelper.encryptByPublicKey(obj2JsonString.getBytes()));
+				
+//				String decrypt = new String(RSACodeHelper.decryptByPrivateKey(RSACodeHelper.decode(obj2JsonString)));
+//				Log.d(TAG, "notifyServerWhenInstalled decrypt: " + decrypt);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_TASK_FINISHED_URL, obj2JsonString, listener);
 		} else {
