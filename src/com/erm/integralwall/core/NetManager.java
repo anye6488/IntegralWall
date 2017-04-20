@@ -125,7 +125,7 @@ public class NetManager {
 	 */
 	public void notifyServerWhenInstalled(String pagekage){
 		/***/
-		if(null == mReference && null == mReference.get()){
+		if(null == mReference || null == mReference.get()){
 			Log.d(TAG, "App can have exited or have lower momery...");
 			return;
 		}

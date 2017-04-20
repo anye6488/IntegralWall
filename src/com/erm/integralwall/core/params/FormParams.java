@@ -6,7 +6,6 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.erm.integralwall.core.Constant;
-import com.erm.integralwall.core.Utils;
 
 /**
  * 作者：liemng on 2017/3/31

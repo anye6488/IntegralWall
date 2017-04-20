@@ -1,27 +1,33 @@
 package com.erm.integralwall;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
+import com.erm.integralwall.core.AdvertsAdapter;
 import com.erm.integralwall.core.IApkInstalledListener;
 import com.erm.integralwall.core.NetManager;
-import com.erm.integralwall.core.download.ResponseProgressListenerImpl;
 import com.erm.integralwall.core.net.IResponseListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
 	private TextView mAdverts = null;
+	private ListView mAdvertListView;
+	private AdvertsAdapter mAdvertsAdapter;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +44,56 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		mAdvertListView = (ListView) findViewById(R.id.ads_listview);
+		mAdvertsAdapter = new AdvertsAdapter(this);
+		mAdvertListView.setAdapter(mAdvertsAdapter);
+		
+		NetManager.getInstance().fetchAdvertsJsonByRequestParams(new IResponseListener<JSONObject>() {
+			
+			@Override
+			public void onResponse(JSONObject jsonObject) {
+				// TODO Auto-generated method stub
+				try {
+					org.json.JSONArray jsonArray = jsonObject.getJSONArray("AdsList");
+					String arrayString = jsonArray.toString();
+					java.lang.reflect.Type listType = new TypeToken<ArrayList<Advert>>(){}.getType();
+					Gson gson = new Gson();
+					List<Advert> list = gson.fromJson(arrayString, listType);
+					mAdvertsAdapter.setUpdata(list);
+					mAdvertsAdapter.notifyDataSetChanged();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				// TODO Auto-generated method stub
+				System.out.println("fetchAdvertsJsonByRequestParams VolleyError: " + error);
+			}
+			
+			@Override
+			public void cancel() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		mAdvertListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				Advert item = mAdvertsAdapter.getItem(position);
+				
+			}
+		});
+		
+		/*//--获取广告列表.
 		mAdverts = (TextView) findViewById(R.id.ads_textview);
 		
-		//--获取广告列表.
 		findViewById(R.id.adsList).setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -51,8 +104,20 @@ public class MainActivity extends Activity {
 					@Override
 					public void onResponse(JSONObject jsonObject) {
 						// TODO Auto-generated method stub
-						System.out.println("fetchAdvertsJsonByRequestParams JSONObject: " + jsonObject);
-						
+						try {
+							org.json.JSONArray jsonArray = jsonObject.getJSONArray("AdsList");
+							String arrayString = jsonArray.toString();
+							java.lang.reflect.Type listType = new TypeToken<ArrayList<Advert>>(){}.getType();
+							Gson gson = new Gson();
+							List<Advert> list = gson.fromJson(arrayString, listType);
+							Message obtainMessage = mHandler.obtainMessage();
+							obtainMessage.obj = list;
+							mHandler.sendMessage(obtainMessage);
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 //						try {
 //							JSONObject jsonObj = jsonObject.getJSONObject("1982");
 //							Advers advers = new Advers();
@@ -251,7 +316,7 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				NetManager.getInstance().cancel("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk");
 			}
-		});
+		});*/
 	}
 
 	

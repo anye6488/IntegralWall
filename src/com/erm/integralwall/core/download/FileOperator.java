@@ -14,7 +14,6 @@ import com.erm.integralwall.core.net.AbstractOperator;
 import com.erm.integralwall.core.params.NetBzip;
 
 import android.content.Context;
-import android.os.Environment;
 import android.os.Message;
 import android.text.TextUtils;
 import okhttp3.Call;

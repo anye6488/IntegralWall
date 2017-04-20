@@ -5,11 +5,9 @@ import java.lang.ref.WeakReference;
 
 import com.erm.integralwall.core.Utils;
 
-import android.R.integer;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public abstract class ResponseProgressListenerImpl extends Handler implements IResponseProgressListener{
 	
