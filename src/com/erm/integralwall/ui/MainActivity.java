@@ -1,4 +1,4 @@
-package com.erm.integralwall;
+package com.erm.integralwall.ui;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,14 +7,18 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
-import com.erm.integralwall.core.AdvertsAdapter;
+import com.erm.integralwall.R;
+import com.erm.integralwall.R.id;
+import com.erm.integralwall.R.layout;
 import com.erm.integralwall.core.IApkInstalledListener;
 import com.erm.integralwall.core.NetManager;
 import com.erm.integralwall.core.net.IResponseListener;
+import com.erm.integralwall.ui.detail.DetailActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -87,7 +91,9 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
 				Advert item = mAdvertsAdapter.getItem(position);
-				
+				Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+				intent.putExtra("ID", item.getAdsId());
+				startActivity(intent);
 			}
 		});
 		

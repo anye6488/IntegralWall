@@ -1,9 +1,8 @@
-package com.erm.integralwall.core;
+package com.erm.integralwall.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.erm.integralwall.Advert;
 import com.erm.integralwall.R;
 
 import android.content.Context;

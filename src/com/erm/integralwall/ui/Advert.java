@@ -1,4 +1,4 @@
-package com.erm.integralwall;
+package com.erm.integralwall.ui;
 
 public class Advert {
 
