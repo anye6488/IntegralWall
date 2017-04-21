@@ -77,17 +77,30 @@ public class FileOperator extends AbstractOperator{
 				if(null != listener){//--下载失败.
 					if(listener instanceof ResponseProgressListenerImpl){
 	            		Message message = Message.obtain();
+	            		message.obj = new IllegalAccessException("Have start downloading...");
 	                	message.what = ResponseProgressListenerImpl.FAIL;
 	                	ResponseProgressListenerImpl responseProgressListenerImpl = (ResponseProgressListenerImpl) listener;
 	                	responseProgressListenerImpl.sendMessage(message);
 	            	} else {
-	            		listener.onFailure();
+	            		listener.onFailure("in downloading...");
 	            	}
 				}
 			}
 
 			@Override
 			public void onResponse(Call call, Response response) throws IOException {
+				if(response.code() == 404){
+					if(listener instanceof ResponseProgressListenerImpl){
+                		Message message = Message.obtain();
+                		message.obj = "file not found";
+                    	message.what = ResponseProgressListenerImpl.FAIL;
+                    	ResponseProgressListenerImpl responseProgressListenerImpl = (ResponseProgressListenerImpl) listener;
+                    	responseProgressListenerImpl.sendMessage(message);
+                	} else {
+                		listener.onFailure("file not found");
+                	}
+					return;
+				}
 				InputStream is = null;
                 byte[] buf = new byte[2048];
                 int len = 0;
@@ -153,11 +166,12 @@ public class FileOperator extends AbstractOperator{
                 	if(null != listener){//---下载过程中失败.
                 		if(listener instanceof ResponseProgressListenerImpl){
                     		Message message = Message.obtain();
+                    		message.obj = e.getMessage();
                         	message.what = ResponseProgressListenerImpl.FAIL;
                         	ResponseProgressListenerImpl responseProgressListenerImpl = (ResponseProgressListenerImpl) listener;
                         	responseProgressListenerImpl.sendMessage(message);
                     	} else {
-                    		listener.onFailure();
+                    		listener.onFailure(e.getMessage());
                     	}
                     }
                 } finally {

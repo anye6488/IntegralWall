@@ -57,7 +57,8 @@ public abstract class ResponseProgressListenerImpl extends Handler implements IR
 				}
 				break;
 			case FAIL:
-				onFailure();
+				if(null != msg.obj)
+					onFailure((String)msg.obj);
 				break;
 	
 			default:
@@ -70,7 +71,7 @@ public abstract class ResponseProgressListenerImpl extends Handler implements IR
 	public void onStart() {}
 	
 	@Override
-	public void onFailure() {}
+	public void onFailure(String message) {}
 	
 	@Override
 	public void onSuccess(String path) {}

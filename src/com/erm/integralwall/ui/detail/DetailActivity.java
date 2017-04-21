@@ -98,7 +98,7 @@ public class DetailActivity extends Activity{
 						try {
 							url = jsonObject.getString("Url");
 							Log.d("ArMn", "download info:" + url);
-							download(mAdvertID + ".apk");
+							download(mAdvertID + ".apk", url);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -120,9 +120,9 @@ public class DetailActivity extends Activity{
 		});
 	}
 	
-	private void download(String name){
+	private void download(String name, String url){
 		String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-		NetManager.getInstance().openOrDownload("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk",
+		NetManager.getInstance().openOrDownload(url,
 				SDPath, name, new ResponseProgressListenerImpl(DetailActivity.this) {
 			
 			@Override
@@ -145,9 +145,9 @@ public class DetailActivity extends Activity{
 			}
 			
 			@Override
-			public void onFailure() {
+			public void onFailure(String message) {
 				// TODO Auto-generated method stub
-				
+				Toast.makeText(DetailActivity.this, message, Toast.LENGTH_LONG).show();
 			}
 		}, true);
 	}
