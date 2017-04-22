@@ -7,16 +7,16 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.android.volley.VolleyError;
 import com.erm.integralwall.core.download.FileOperator;
 import com.erm.integralwall.core.download.IResponseProgressListener;
+import com.erm.integralwall.core.encrypt.RSACodeHelper;
 import com.erm.integralwall.core.net.IResponseListener;
 import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 public class NetManager {
 	
@@ -66,9 +66,9 @@ public class NetManager {
 	 */
 	public void fetchAdvertsJsonByRequestParams(IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
-			Map<String, String> map = mFormParams.getAdsListParamsMap();
+			Map<String, String> map = mFormParams.getAdsListParamsMap("ArMn");
 			
-			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_LIST_URL, map, listener);
+			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_LIST_URL, Utils.transitionObj2JsonString(map), listener);
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -81,10 +81,10 @@ public class NetManager {
 	public void fetchAdvertsDetailJsonByRequestParams(String adsID, IResponseListener<JSONObject> listener){
 		Log.d(TAG, "download have finished, next to notify server.");
 		if(null != mNetOperator){
-			Map<String, String> map = mFormParams.getAdsListParamsMap();
+			Map<String, String> map = mFormParams.getBaseParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
 			
-			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_DETAIL_URL, map, listener);
+			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_DETAIL_URL, Utils.transitionObj2JsonString(map), listener);
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -96,22 +96,36 @@ public class NetManager {
 	 */
 	public void notifyServerWhenInstalled(String adsID, IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
-			Map<String, String> map = mFormParams.getAdsListParamsMap();
+			Map<String, String> map = mFormParams.getBaseParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
 			
-			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_HAS_INSTALLED_URL, map, listener);
+			String obj2JsonString = Utils.transitionObj2JsonString(map);
+			
+			/**enable encrypt*/
+			try {
+				obj2JsonString = RSACodeHelper.encode(RSACodeHelper.encryptByPublicKey(obj2JsonString.getBytes()));
+				
+//				String decrypt = new String(RSACodeHelper.decryptByPrivateKey(RSACodeHelper.decode(obj2JsonString)));
+//				Log.d(TAG, "notifyServerWhenInstalled decrypt: " + decrypt);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_HAS_INSTALLED_URL, obj2JsonString, listener);
 		} else {
 			throw new IllegalArgumentException();
 		}
 	}
 	
 	/**
-	 * 用户完成任务的时候回调的接口.
+	 * 用户完成安装的时候回调的接口.
 	 * @param pagekage 已经安装的APK包名
 	 */
 	public void notifyServerWhenInstalled(String pagekage){
 		/***/
-		if(null == mReference && null == mReference.get()){
+		if(null == mReference || null == mReference.get()){
 			Log.d(TAG, "App can have exited or have lower momery...");
 			return;
 		}
@@ -124,27 +138,7 @@ public class NetManager {
 		Map<String, String> map = mApkInstalledListener.getMapOfPakageAndAdsID();
 		if(map.containsKey(pagekage)){
 			String AdsId = map.get(pagekage);
-			notifyServerWhenInstalled(AdsId, new IResponseListener<JSONObject>() {
-
-				@Override
-				public void onResponse(JSONObject t) {
-					// TODO Auto-generated method stub
-					if(null != mReference && null != mReference.get())
-					Toast.makeText(mReference.get(), t.toString(), Toast.LENGTH_LONG).show();
-				}
-
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void cancel() {
-					// TODO Auto-generated method stub
-					
-				}
-			});
+			notifyServerWhenInstalled(AdsId, null);
 		}
 	}
 	
@@ -154,17 +148,31 @@ public class NetManager {
 	 */
 	public void notifyServerWhenTaskFinished(String adsID, IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
-			Map<String, String> map = mFormParams.getAdsListParamsMap();
+			Map<String, String> map = mFormParams.getBaseParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
 			
-			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_TASK_FINISHED_URL, map, listener);
+			String obj2JsonString = Utils.transitionObj2JsonString(map);
+			
+			/**enable encrypt*/
+			try {
+				obj2JsonString = RSACodeHelper.encode(RSACodeHelper.encryptByPublicKey(obj2JsonString.getBytes()));
+				
+//				String decrypt = new String(RSACodeHelper.decryptByPrivateKey(RSACodeHelper.decode(obj2JsonString)));
+//				Log.d(TAG, "notifyServerWhenInstalled decrypt: " + decrypt);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			mNetOperator.fetchJsonByRequestParams(Constant.WHEN_TASK_FINISHED_URL, obj2JsonString, listener);
 		} else {
 			throw new IllegalArgumentException();
 		}
 	}
 	
 	/**
-	 * 用户完成任务的时候回调的接口.
+	 * 根据广告ID获取下载的URL.
 	 * @param listener 请求网络回调
 	 */
 	public void fetchApkUrlByAdsID(String adsID, IResponseListener<JSONObject> listener){
@@ -172,20 +180,37 @@ public class NetManager {
 			Map<String, String> map = new HashMap<String, String>();
 			map.put(Constant.ADVERTS_ID, adsID);
 			
-			mNetOperator.fetchJsonByRequestParams(Constant.FETCH_APK_DOWNLOAD_URL, map, listener);
+			mNetOperator.fetchJsonByRequestParams(Constant.FETCH_APK_DOWNLOAD_URL, Utils.transitionObj2JsonString(map), listener);
 		} else {
 			throw new IllegalArgumentException();
 		}
 	}
 	
 	/**
-	 * 文件下载
+	 * 根据广告ID获取任务时长
+	 * @param listener 请求网络回调
+	 */
+	public void fetchTaskTimeByAdsID(String adsID, IResponseListener<JSONObject> listener){
+		if(null != mNetOperator){
+			Map<String, String> map = new HashMap<String, String>();
+			map.put(Constant.ADVERTS_ID, adsID);
+			
+			mNetOperator.fetchJsonByRequestParams(Constant.FETCH_TASK_TIME_URL, Utils.transitionObj2JsonString(map), listener);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * 文件下载，如果存在就直接安装.
 	 * @param url
 	 */
-	public void download(String url, String fileName, IResponseProgressListener listener, boolean install){
-		
+	public void openOrDownload(String url, String path, String fileName, IResponseProgressListener listener, boolean install){
+		if(TextUtils.isEmpty(path) || TextUtils.isEmpty(url) || TextUtils.isEmpty(fileName)){
+			throw new IllegalArgumentException("url or path, filename is not allow null...");
+		}
 		if(null != mFileOperator)
-			mFileOperator.download(url, fileName, listener, install);
+			mFileOperator.openOrDownload(url, path, fileName, listener, install);
 	}
 	
 	public void cancel(String url){

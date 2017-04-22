@@ -5,11 +5,9 @@ import java.lang.ref.WeakReference;
 
 import com.erm.integralwall.core.Utils;
 
-import android.R.integer;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public abstract class ResponseProgressListenerImpl extends Handler implements IResponseProgressListener{
 	
@@ -54,11 +52,13 @@ public abstract class ResponseProgressListenerImpl extends Handler implements IR
 				
 				/***/
 				if(null != mReference && null != mReference.get() && install){
-					Utils.installApp(mReference.get(), path);
+					if(Utils.isValidApk(path))
+						Utils.installApp(mReference.get(), path);
 				}
 				break;
 			case FAIL:
-				onFailure();
+				if(null != msg.obj)
+					onFailure((String)msg.obj);
 				break;
 	
 			default:
@@ -71,7 +71,7 @@ public abstract class ResponseProgressListenerImpl extends Handler implements IR
 	public void onStart() {}
 	
 	@Override
-	public void onFailure() {}
+	public void onFailure(String message) {}
 	
 	@Override
 	public void onSuccess(String path) {}

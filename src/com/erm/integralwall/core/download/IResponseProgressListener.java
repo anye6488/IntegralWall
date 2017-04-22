@@ -8,5 +8,5 @@ public interface IResponseProgressListener {
 	
 	void onStart();
 	
-	void onFailure();
+	void onFailure(String message);
 }

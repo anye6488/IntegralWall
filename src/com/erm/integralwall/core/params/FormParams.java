@@ -6,7 +6,6 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.erm.integralwall.core.Constant;
-import com.erm.integralwall.core.Utils;
 
 /**
  * 作者：liemng on 2017/3/31
@@ -14,6 +13,7 @@ import com.erm.integralwall.core.Utils;
  */
 
 import android.content.Context;
+import android.text.TextUtils;
 
 /**用于合成网络请求头信息**/
 public class FormParams {
@@ -28,17 +28,37 @@ public class FormParams {
      * 获取广告列表所需的部分参数
      * @return
      */
-    public Map<String, String> getAdsListParamsMap(){
+    public Map<String, String> getAdsListParamsMap(String other){
 		HashMap<String,String> map = new HashMap<String, String>();
 		map.put(Constant.ADP_CODE, Constant.APP_CODE);
 		map.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
 		map.put(Constant.IP, mPhoneInfo.getIPAddress());
 		map.put(Constant.SDK_VERSION, Constant.SDK_VERSION_CODE);
+		map.put(Constant.IMSI, mPhoneInfo.getPhoneIMSI());
+		map.put(Constant.ANDROID_ID, mPhoneInfo.getPhoneID());
+		map.put(Constant.SYSTEM_VERSION, mPhoneInfo.getPhoneVersion());
+		map.put(Constant.MODEL, mPhoneInfo.getPhoneModels());
+		map.put(Constant.MAC, mPhoneInfo.getPhoneMAC());
+		map.put(Constant.OPERATOR, mPhoneInfo.getOperators());
+		map.put(Constant.NETTYPE, mPhoneInfo.getNetWorkType());
+		map.put(Constant.BRAND, mPhoneInfo.getPhoneBrand());
+		map.put(Constant.RESOLUTION, mPhoneInfo.getResolution());
+		map.put(Constant.OTHER, TextUtils.isEmpty(other) ? "ArMn" : other);
 		
-		//---get all install package, but not system app.
+		//--- 'false' get all install package, but not system app.
 		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
-		Utils.map2Json(map);
         return map;
+    }
+    
+    /**
+     * 获取基础手机参数.
+     * @return
+     */
+    public Map<String, String> getBaseParamsMap(){
+    	HashMap<String,String> map = new HashMap<String, String>();
+		map.put(Constant.ADP_CODE, Constant.APP_CODE);
+		map.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
+		return map;
     }
     
     /**
