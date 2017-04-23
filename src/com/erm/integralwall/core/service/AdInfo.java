@@ -16,7 +16,7 @@ public class AdInfo {
 	
 	private int  exeTime;
 	
-	private String shortMessage;
+	private boolean isRegister;
 
 	private List<String> activitys;//注册流程Activity
 	
@@ -66,14 +66,13 @@ public class AdInfo {
 		this.exeTime = exeTime;
 	}
 
-	public String getShortMessage() {
-		return shortMessage;
+	public boolean isRegister() {
+		return isRegister;
 	}
 
-	public void setShortMessage(String shortMessage) {
-		this.shortMessage = shortMessage;
+	public void setRegister(boolean isRegister) {
+		this.isRegister = isRegister;
 	}
-
 
 	public List<String> getActivitys() {
 		return activitys;

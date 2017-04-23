@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -42,7 +43,7 @@
                 <data android:scheme="package" />  
             </intent-filter>  
       </receiver>  
-
+    <service android:name="com.erm.integralwall.core.service.SdkService" />
     </application>
 
 </manifest>

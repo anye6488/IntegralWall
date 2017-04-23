@@ -45,7 +45,26 @@ public class SdkService extends Service{
 		startTimer();
 		return null;
 	}
+	@Override
+	public void onRebind(Intent intent) {
+		super.onRebind(intent);
+	}
 
+	@Override
+	public boolean onUnbind(Intent intent) {
+		return super.onUnbind(intent);
+	}
+	/**
+	 * 销毁是停止计算
+	 */
+	@Override
+	public void onDestroy() {
+		mTimer.cancel();
+		mTimer.purge();
+		mTimer = null;
+		//releaseWakeLock();
+		super.onDestroy();
+	}
 	
 	class SdkTask extends TimerTask {
 		private Context mContext;
@@ -65,8 +84,7 @@ public class SdkService extends Service{
 				packageName = getCurrentPkgName20(mContext);
 			} else {
 				packageName = getCurrentPkgName19(mContext);
-			}
-										
+			}							
 			//Android5.1.1的版本，拿不到包名
 			if(packageName==null  ||  packageName.trim().equals("")){
 				
@@ -81,7 +99,7 @@ public class SdkService extends Service{
 						//若未完成任务，即退出任务，则提示未完成
 						if(ad !=null && ad.isAlertFlag()){
 							ad.setAlertFlag(false);//提示之后，不再提示
-							if(!ad.getShortMessage().equals("0")){
+							if(ad.isRegister()){
 								onHint("该应用《"+ad.getAppName()+"》需注册，完成后立即获得奖励");
 							}else{
 								onHint("真可惜，《"+ad.getAppName()+"》的奖励还没得到，请再多用会吧, 剩余 '"+(ad.getTaskTime()-ad.getExeTime())+"'秒！");
@@ -105,7 +123,7 @@ public class SdkService extends Service{
 				int Time = adInfo.getExeTime();
 				if (Build.VERSION.SDK_INT <= 19) {
 					if(packageName!=null && packageName.equals(adInfo.getPackageName())){				
-						if(!adInfo.getShortMessage().equals("0")){
+						if(adInfo.isRegister()){
 							isfinish = ActivityCacheUtils.getInstance().checkFinish(packageName);
 							if(isfinish){
 										ActivityCacheUtils.getInstance().remove(packageName);
@@ -122,17 +140,17 @@ public class SdkService extends Service{
 					onHint(adInfo.getTaskInfo()+" 即可获得奖励");
 				}
 				if (taskTime> 0) {//任务时间不能为0
-					//完成体验时间通知服务器
+					//完成时间通知服务器
 					if (Time >= Integer.valueOf(taskTime)) {
-	
 						onHint("恭喜您,《" + adInfo.getAppName() + "》已获得奖励！继续完成下一个任务吧！");
 						ActivityCacheUtils.getInstance().remove(packageName); //任务完成，清空缓存记录
 								
 							}
-					} else if (Time < Integer.valueOf(taskTime)) {//计算时间
+					else if (Time < Integer.valueOf(taskTime)) {//计算时间
 						Time = Time + 1;
 						adInfo.setExeTime(Time); //设置任务已体验时间
 					}
+				}
 				}	
 			
 		
@@ -165,8 +183,7 @@ public class SdkService extends Service{
 		 * @return
 		 */
 		public String getCurrentPkgName19(Context context) {
-			ActivityManager mActivityManager = (ActivityManager) context
-					.getSystemService("activity");
+			ActivityManager mActivityManager = (ActivityManager) context.getSystemService("activity");
 			ComponentName topActivity = mActivityManager.getRunningTasks(1)
 					.get(0).topActivity;
 			return topActivity.getPackageName();
