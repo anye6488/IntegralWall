@@ -17,6 +17,7 @@ import com.erm.integralwall.core.params.FormParams;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 public class NetManager {
 	
@@ -33,6 +34,8 @@ public class NetManager {
 	private FormParams mFormParams;
 
 	private FileOperator mFileOperator;
+	
+	private Map<String , String> mPakage2AdsIdMap = new HashMap<String, String>();
 	
 	private IApkInstalledListener mApkInstalledListener;
 	
@@ -130,15 +133,22 @@ public class NetManager {
 			return;
 		}
 		
-		/**Skip if listener or callback is not null,else do nothing*/
-		if(null == mApkInstalledListener || null == mApkInstalledListener.getMapOfPakageAndAdsID()){
-			return;
-		}
-		
-		Map<String, String> map = mApkInstalledListener.getMapOfPakageAndAdsID();
-		if(map.containsKey(pagekage)){
-			String AdsId = map.get(pagekage);
-			notifyServerWhenInstalled(AdsId, null);
+		String advertID = mPakage2AdsIdMap.get(pagekage);
+		if(!TextUtils.isEmpty(advertID)){
+			/**if use sdk inner cache*/
+			notifyServerWhenInstalled(advertID, null);
+		} else {
+			/**Skip if listener or callback is not null,else do nothing*/
+			if(null == mApkInstalledListener || null == mApkInstalledListener.getMapOfPakageAndAdsID()){
+				Toast.makeText(mReference.get(), "没有匹配的包名被找到...", Toast.LENGTH_LONG).show();
+				return;
+			}
+			
+			Map<String, String> map = mApkInstalledListener.getMapOfPakageAndAdsID();
+			if(map.containsKey(pagekage)){
+				String AdsId = map.get(pagekage);
+				notifyServerWhenInstalled(AdsId, null);
+			}
 		}
 	}
 	
@@ -175,7 +185,15 @@ public class NetManager {
 	 * 根据广告ID获取下载的URL.
 	 * @param listener 请求网络回调
 	 */
-	public void fetchApkUrlByAdsID(String adsID, IResponseListener<JSONObject> listener){
+	public void fetchApkUrlByAdsID(String adsID, String pakage, IResponseListener<JSONObject> listener){
+		if(TextUtils.isEmpty(adsID) || TextUtils.isEmpty(pakage)){
+			Log.d(TAG, "fetch apk url params is null...");
+			return;
+		}
+		
+		/**cache pakage and advert id.*/
+		mPakage2AdsIdMap.put(pakage, adsID);
+		
 		if(null != mNetOperator){
 			Map<String, String> map = new HashMap<String, String>();
 			map.put(Constant.ADVERTS_ID, adsID);
@@ -214,6 +232,9 @@ public class NetManager {
 	}
 	
 	public void cancel(String url){
+		if(TextUtils.isEmpty(url))
+			return;
+		
 		boolean flag = false;
 		if(null != mNetOperator)
 			flag = mNetOperator.cancel(url);

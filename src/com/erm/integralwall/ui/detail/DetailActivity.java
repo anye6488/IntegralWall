@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,8 @@ public class DetailActivity extends Activity{
 	private TextView mDetailTextVew;
 	private Button mDownload;
 	private int mAdvertID = 0;
+	private String mUrl = null;
+	private DetailBzip mDetailBzip;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +60,14 @@ public class DetailActivity extends Activity{
 			mAdvertID = intent.getIntExtra("ID", 1995);
 			NetManager.getInstance().fetchAdvertsDetailJsonByRequestParams(String.valueOf(mAdvertID), new IResponseListener<JSONObject>() {
 				
+
 				@Override
 				public void onResponse(JSONObject jsonObject) {
 					// TODO Auto-generated method stub
 					Gson gson = new Gson();
-//					Map<String, DetailBzip> detailMap = gson.fromJson(jsonObject.toString(), new TypeToken<Map<String, DetailBzip>>() {}.getType());  
-					DetailBzip detailBzip = gson.fromJson(jsonObject.toString(), DetailBzip.class);
-					mTaskAdapter.setUpData(detailBzip.getTask());
-					mDetailTextVew.setText(detailBzip.toString());
+					mDetailBzip = gson.fromJson(jsonObject.toString(), DetailBzip.class);
+					mTaskAdapter.setUpData(mDetailBzip.getTask());
+					mDetailTextVew.setText(mDetailBzip.toString());
 				}
 				
 				@Override
@@ -89,7 +92,7 @@ public class DetailActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				NetManager.getInstance().fetchApkUrlByAdsID(String.valueOf(mAdvertID), new IResponseListener<JSONObject>() {
+				NetManager.getInstance().fetchApkUrlByAdsID(String.valueOf(mAdvertID), mDetailBzip.PackName, new IResponseListener<JSONObject>() {
 					
 					@Override
 					public void onResponse(JSONObject jsonObject) {
@@ -98,6 +101,7 @@ public class DetailActivity extends Activity{
 						try {
 							url = jsonObject.getString("Url");
 							Log.d("ArMn", "download info:" + url);
+							mUrl = url;
 							download(mAdvertID + ".apk", url);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
@@ -156,7 +160,7 @@ public class DetailActivity extends Activity{
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		NetManager.getInstance().cancel("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk");
+		NetManager.getInstance().cancel(mUrl);
 	}
 
 	static class TaskAdapter extends BaseAdapter{

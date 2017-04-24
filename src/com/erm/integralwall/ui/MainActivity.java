@@ -37,16 +37,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		NetManager.getInstance().inject(this, new IApkInstalledListener() {
-			
-			@Override
-			public Map<String, String> getMapOfPakageAndAdsID() {
-				// TODO Auto-generated method stub com.tencent.mobileqq
-				Map<String, String> map= new HashMap<String, String>();
-				map.put("com.tencent.mobileqq", "1995");
-				return map;
-			}
-		});
+		NetManager.getInstance().inject(this, null);
 		
 		mAdvertListView = (ListView) findViewById(R.id.ads_listview);
 		mAdvertsAdapter = new AdvertsAdapter(this);
