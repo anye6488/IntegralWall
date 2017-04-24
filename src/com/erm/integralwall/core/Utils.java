@@ -20,7 +20,7 @@ public class Utils {
 		Intent intent = new Intent(Intent.ACTION_VIEW);
         // 设置目标应用安装包路径    
         intent.setDataAndType(Uri.fromFile(new File(path)),    
-                "application/vnd.android.package-archive");    
+                "application/vnd.android.package-archive");  
         context.startActivity(intent);    
 	}
 	
