@@ -127,7 +127,7 @@ public class DetailActivity extends Activity{
 	private void download(String name, String url){
 		String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 		NetManager.getInstance().openOrDownload(url,
-				SDPath, name, new ResponseProgressListenerImpl(DetailActivity.this) {
+				SDPath, name, mDetailBzip.PackName, new ResponseProgressListenerImpl(DetailActivity.this) {
 			
 			@Override
 			public void onSuccess(String path) {

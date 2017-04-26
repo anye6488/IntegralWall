@@ -15,6 +15,8 @@ import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -133,14 +135,14 @@ public class NetManager {
 			return;
 		}
 		
-		String advertID = mPakage2AdsIdMap.get(pagekage);
+		String advertID = mPakage2AdsIdMap.remove(pagekage);
 		if(!TextUtils.isEmpty(advertID)){
 			/**if use sdk inner cache*/
 			notifyServerWhenInstalled(advertID, null);
 		} else {
 			/**Skip if listener or callback is not null,else do nothing*/
 			if(null == mApkInstalledListener || null == mApkInstalledListener.getMapOfPakageAndAdsID()){
-				Toast.makeText(mReference.get(), "没有匹配的包名被找到...", Toast.LENGTH_LONG).show();
+				Toast.makeText(mReference.get(), "没有匹配的包名被找到..." + pagekage, Toast.LENGTH_LONG).show();
 				return;
 			}
 			
@@ -220,10 +222,19 @@ public class NetManager {
 	}
 	
 	/**
-	 * 文件下载，如果存在就直接安装.
+	 * 文件下载，如果存在就直接安装,如果安装过则直接打开.
 	 * @param url
 	 */
-	public void openOrDownload(String url, String path, String fileName, IResponseProgressListener listener, boolean install){
+	public void openOrDownload(String url, String path, String fileName, String packageName, IResponseProgressListener listener, boolean install){
+		if(!TextUtils.isEmpty(packageName) && null !=  mReference && null != mReference.get()){
+			PackageManager packageManager = mReference.get().getPackageManager();
+			Intent intent = packageManager.getLaunchIntentForPackage(packageName);
+			if(null != intent){
+				mReference.get().startActivity(intent);
+				return;
+			}
+		}
+		
 		if(TextUtils.isEmpty(path) || TextUtils.isEmpty(url) || TextUtils.isEmpty(fileName)){
 			throw new IllegalArgumentException("url or path, filename is not allow null...");
 		}
