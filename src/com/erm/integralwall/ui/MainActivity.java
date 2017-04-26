@@ -339,8 +339,10 @@ public class MainActivity extends Activity {
 
 	public void button(View view)
 	{
-		 startService("com.tencent.mobileqq", 1, 100, "qq", "0", "任務內容");
+		 startService("com.tencent.mobileqq", 1995, 10, "qq", "0", "任務內容");
 	}
+	
+	
 	/**
 	 * 
 	 * @param packagename 包名

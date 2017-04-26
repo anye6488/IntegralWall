@@ -5,6 +5,13 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.volley.VolleyError;
+import com.erm.integralwall.core.NetManager;
+import com.erm.integralwall.core.net.IResponseListener;
+
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -79,7 +86,7 @@ public class SdkService extends Service{
 			// TODO Auto-generated method stub
 			//5.0系统的拿包不一样
 			//版本1.0.8加上
-			String packageName = "";
+		    String packageName = "";
 			if (Build.VERSION.SDK_INT > 19) {
 				packageName = getCurrentPkgName20(mContext);
 			} else {
@@ -91,7 +98,7 @@ public class SdkService extends Service{
 				return;
 				
 			}else{
-				AdInfo adInfo = ActivityCacheUtils.getInstance().getAdInfo(packageName);
+				 AdInfo adInfo = ActivityCacheUtils.getInstance().getAdInfo(packageName);
 				if(null == adInfo){
 					String latestPackName = ActivityCacheUtils.getInstance().getLatestPackName();
 					if(packageName!=null && !packageName.equals(latestPackName)){
@@ -126,11 +133,42 @@ public class SdkService extends Service{
 						if(adInfo.isRegister()){
 							isfinish = ActivityCacheUtils.getInstance().checkFinish(packageName);
 							if(isfinish){
-										ActivityCacheUtils.getInstance().remove(packageName);
-										onHint("恭喜您,《" + adInfo.getAppName() + "》已获得奖励！继续完成下一个任务吧！");
-										return ;
+						        NetManager.getInstance().notifyServerWhenTaskFinished(String.valueOf(adInfo.getAdId()),new IResponseListener<JSONObject>(){
+									@Override
+									public void onResponse(JSONObject t) {
+										// TODO Auto-generated method stub
+										try {
+											String code=t.getString("Code");
+											if(code.equals("200"))
+											{
+												ActivityCacheUtils.getInstance().remove("com.tencent.mobileqq");
+												onHint("恭喜您,《" + "qq" + "》已获得奖励！继续完成下一个任务吧！");
+												return ;
+											}
+										} catch (JSONException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+											onHint("数据问题");
+										}
 									}
-								}
+
+									@Override
+									public void onErrorResponse(
+											VolleyError error) {
+										// TODO Auto-generated method stub
+										
+									}
+
+									@Override
+									public void cancel() {
+										// TODO Auto-generated method stub
+										
+									}
+						        	
+						        });
+							
+									
+							}}
 							
 							}
 						}
