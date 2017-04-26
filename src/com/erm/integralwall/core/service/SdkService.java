@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 public class SdkService extends Service{
@@ -140,7 +141,7 @@ public class SdkService extends Service{
 										try {
 											String code=t.getString("Code");
 											if(code.equals("200"))
-											{
+											{  
 												ActivityCacheUtils.getInstance().remove("com.tencent.mobileqq");
 												onHint("恭喜您,《" + "qq" + "》已获得奖励！继续完成下一个任务吧！");
 												return ;
@@ -180,9 +181,40 @@ public class SdkService extends Service{
 				if (taskTime> 0) {//任务时间不能为0
 					//完成时间通知服务器
 					if (Time >= Integer.valueOf(taskTime)) {
-						onHint("恭喜您,《" + adInfo.getAppName() + "》已获得奖励！继续完成下一个任务吧！");
-						ActivityCacheUtils.getInstance().remove(packageName); //任务完成，清空缓存记录
-								
+						 NetManager.getInstance().notifyServerWhenTaskFinished(String.valueOf(adInfo.getAdId()),new IResponseListener<JSONObject>(){
+								@Override
+								public void onResponse(JSONObject t) {
+									// TODO Auto-generated method stub
+									try {
+										String code=t.getString("Code");
+										if(code.equals("200"))
+										{  
+											ActivityCacheUtils.getInstance().remove("com.tencent.mobileqq");
+											onHint("恭喜您,《" + "qq" + "》已获得奖励！继续完成下一个任务吧！");
+											return ;
+										}
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+										onHint("数据问题");
+									}
+								}
+
+								@Override
+								public void onErrorResponse(
+										VolleyError error) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void cancel() {
+									// TODO Auto-generated method stub
+									
+								}
+					        	
+					        });
+					
 							}
 					else if (Time < Integer.valueOf(taskTime)) {//计算时间
 						Time = Time + 1;

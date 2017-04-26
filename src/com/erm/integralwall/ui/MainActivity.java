@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
@@ -12,11 +13,13 @@ import com.erm.integralwall.R.id;
 import com.erm.integralwall.R.layout;
 import com.erm.integralwall.core.IApkInstalledListener;
 import com.erm.integralwall.core.NetManager;
+import com.erm.integralwall.core.Utils;
 import com.erm.integralwall.core.net.IResponseListener;
 import com.erm.integralwall.core.service.ActivityCacheUtils;
 import com.erm.integralwall.core.service.AdInfo;
 import com.erm.integralwall.core.service.SdkService;
 import com.erm.integralwall.ui.detail.DetailActivity;
+import com.erm.integralwall.ui.detail.GetAdsTimeBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -339,7 +342,48 @@ public class MainActivity extends Activity {
 
 	public void button(View view)
 	{
-		 startService("com.tencent.mobileqq", 1995, 10, "qq", "0", "任務內容");
+		NetManager.getInstance().fetchTaskTimeByAdsID("1787",
+				new IResponseListener<JSONObject>() {
+
+					@Override
+					public void onResponse(JSONObject t) {
+						// TODO Auto-generated method stub
+						try {
+							String code = t.getString("Code");
+							if (code.equals("200")) {
+								Gson gson = new Gson();
+								GetAdsTimeBean gTimeBean = gson.fromJson(
+										t.toString(), GetAdsTimeBean.class);
+								startService("com.tencent.mobileqq",
+										Integer.valueOf(gTimeBean.getAdsId()),
+										10,
+										gTimeBean.getTitile(),
+										gTimeBean.getRegisterState(),
+										gTimeBean.getTaskIntro());
+							
+							}else{
+								Toast.makeText(getApplicationContext(), "广告id有误",  Toast.LENGTH_SHORT).show();
+							}
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// TODO Auto-generated method stub
+						Toast.makeText(getApplicationContext(), "系统故障",  Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void cancel() {
+						// TODO Auto-generated method stub
+
+					}
+
+				});
+//		 startService("com.tencent.mobileqq", 1995, 10, "qq", "0", "任務內容");
 	}
 	
 	
@@ -354,62 +398,67 @@ public class MainActivity extends Activity {
 	 */
 	public void startService(String packagename,Integer adId,int tasktime,String appname,String is_register,String task)
 	{
-		//初始化监听数据
-		AdInfo adinfo=new AdInfo();
-		adinfo.setAdId(adId);
-		adinfo.setAppName(appname);
-		adinfo.setTaskTime(tasktime);
-		adinfo.setPackageName(packagename);
-		adinfo.setTaskInfo(task);
-		adinfo.setOpenFlag(true);  //任务详情提示
-		adinfo.setAlertFlag(true); //任务未完成提示
-		if(!is_register.equals("0") && !is_register.trim().equals("")){
-			adinfo.setRegister(true);
-		}else{
-			adinfo.setRegister(false);
-		}
-		//若为注册，则监听Activity活动路径
-		if(adinfo.isRegister()){
-			if(is_register != null && !is_register.trim().equals("")){
-				String[] array = is_register.split(";");
-				ArrayList<String> list = new ArrayList<String>();
-				for(String str : array){				
-					list.add(str);
+		//
+		if(Utils.isAppInstalled(getApplicationContext(), packagename))
+		  {	//初始化监听数据
+			AdInfo adinfo=new AdInfo();
+			adinfo.setAdId(adId);
+			adinfo.setAppName(appname);
+			adinfo.setTaskTime(tasktime);
+			adinfo.setPackageName(packagename);
+			adinfo.setTaskInfo(task);
+			adinfo.setOpenFlag(true);  //任务详情提示
+			adinfo.setAlertFlag(true); //任务未完成提示
+			if(!is_register.equals("0") && !is_register.trim().equals("")){
+				adinfo.setRegister(true);
+			}else{
+				adinfo.setRegister(false);
+			}
+			//若为注册，则监听Activity活动路径
+			if(adinfo.isRegister()){
+				if(is_register != null && !is_register.trim().equals("")){
+					String[] array = is_register.split(";");
+					ArrayList<String> list = new ArrayList<String>();
+					for(String str : array){				
+						list.add(str);
+					}
+					adinfo.setActivitys(list);
 				}
-				adinfo.setActivitys(list);
 			}
-		}
-		
-		ActivityCacheUtils.getInstance().addAdInfo(packagename, adinfo);
-		ActivityCacheUtils.getInstance().setLatestPackName(packagename);       //最近打开包名
-		ActivityCacheUtils.getInstance().setLatestAdId(Integer.valueOf(adId)); //最近打开广告ID
-		Intent startservice = new Intent(this, SdkService.class);
-		isBind = bindService(startservice, bine = new bineConnection(),
-				BIND_AUTO_CREATE);
-		PackageManager packageManager = getPackageManager();
-		PackageInfo pi = null;
-		try {
-			pi = packageManager.getPackageInfo(packagename, 0);
+			ActivityCacheUtils.getInstance().addAdInfo(packagename, adinfo);
+			ActivityCacheUtils.getInstance().setLatestPackName(packagename);       //最近打开包名
+			ActivityCacheUtils.getInstance().setLatestAdId(Integer.valueOf(adId)); //最近打开广告ID
+			PackageManager packageManager = getPackageManager();
+			PackageInfo pi = null;
+			try {
+				pi = packageManager.getPackageInfo(packagename, 0);
 
-			Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-			resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-			resolveIntent.setPackage(pi.packageName);
+				Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+				resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+				resolveIntent.setPackage(pi.packageName);
 
-			List<ResolveInfo> apps = packageManager.queryIntentActivities(
-					resolveIntent, 0);
+				List<ResolveInfo> apps = packageManager.queryIntentActivities(
+						resolveIntent, 0);
 
-			ResolveInfo ri = apps.iterator().next();
-			if (ri != null) {
-				String className = ri.activityInfo.name;
-				Intent intent = new Intent(Intent.ACTION_MAIN);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				ComponentName cn = new ComponentName(packagename, className);
-				intent.setComponent(cn);
-				startActivity(intent);
+				ResolveInfo ri = apps.iterator().next();
+				if (ri != null) {
+					String className = ri.activityInfo.name;
+					Intent intent = new Intent(Intent.ACTION_MAIN);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					ComponentName cn = new ComponentName(packagename, className);
+					intent.setComponent(cn);
+					startActivity(intent);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			Intent startservice = new Intent(this, SdkService.class);
+			isBind = bindService(startservice, bine = new bineConnection(),
+					BIND_AUTO_CREATE);
+		}else{
+			Toast.makeText(getApplicationContext(), "沒找到对应的app",  Toast.LENGTH_SHORT).show();
 		}
+	
 	}
 	
 	/**
