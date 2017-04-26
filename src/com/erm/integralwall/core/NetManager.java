@@ -212,7 +212,7 @@ public class NetManager {
 	 */
 	public void fetchTaskTimeByAdsID(String adsID, IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
-			Map<String, String> map = new HashMap<String, String>();
+			Map<String, String> map = mFormParams.getBaseParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
 			
 			mNetOperator.fetchJsonByRequestParams(Constant.FETCH_TASK_TIME_URL, Utils.transitionObj2JsonString(map), listener);
