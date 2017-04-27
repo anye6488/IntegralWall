@@ -340,9 +340,16 @@ public class MainActivity extends Activity {
 		});*/
 	}
 
-	public void button(View view)
+   
+	/**
+	 * 广告id
+	 *
+	 * @param ID
+	 */
+	public void startID(String ID)
 	{
-		NetManager.getInstance().fetchTaskTimeByAdsID("1787",
+	
+		NetManager.getInstance().fetchTaskTimeByAdsID(ID,
 				new IResponseListener<JSONObject>() {
 
 					@Override
@@ -354,9 +361,9 @@ public class MainActivity extends Activity {
 								Gson gson = new Gson();
 								GetAdsTimeBean gTimeBean = gson.fromJson(
 										t.toString(), GetAdsTimeBean.class);
-								startService("com.tencent.mobileqq",
+								startService(gTimeBean.getPackName(),
 										Integer.valueOf(gTimeBean.getAdsId()),
-										10,
+										Integer.valueOf(gTimeBean.getTime()),
 										gTimeBean.getTitile(),
 										gTimeBean.getRegisterState(),
 										gTimeBean.getTaskIntro());
@@ -383,9 +390,8 @@ public class MainActivity extends Activity {
 					}
 
 				});
-//		 startService("com.tencent.mobileqq", 1995, 10, "qq", "0", "任務內容");
-	}
 	
+	}	
 	
 	/**
 	 * 
@@ -396,7 +402,7 @@ public class MainActivity extends Activity {
 	 * @param is_register 注册轨迹
 	 * @param task 任务
 	 */
-	public void startService(String packagename,Integer adId,int tasktime,String appname,String is_register,String task)
+	private void startService(String packagename,Integer adId,int tasktime,String appname,String is_register,String task)
 	{
 		//
 		if(Utils.isAppInstalled(getApplicationContext(), packagename))
@@ -521,6 +527,9 @@ public class MainActivity extends Activity {
 		if (isBind) {
 			unbindService(bine);
 			isBind = false;
+		}
+		if (receiver != null) {
+			unregisterReceiver(receiver);
 		}
 		NetManager.getInstance().cancelAll();
 	}

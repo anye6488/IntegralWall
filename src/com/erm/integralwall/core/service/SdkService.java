@@ -139,13 +139,12 @@ public class SdkService extends Service{
 									public void onResponse(JSONObject t) {
 										// TODO Auto-generated method stub
 										try {
-											String code=t.getString("Code");
-											if(code.equals("200"))
-											{  
-												ActivityCacheUtils.getInstance().remove("com.tencent.mobileqq");
-												onHint("恭喜您,《" + "qq" + "》已获得奖励！继续完成下一个任务吧！");
-												return ;
-											}
+											String PackName=t.getString("PackName");					
+											String Title=t.getString("Title");
+											ActivityCacheUtils.getInstance().remove(PackName);
+											onHint("恭喜您,《" + Title + "》已获得奖励！继续完成下一个任务吧！");
+											return ;
+											
 										} catch (JSONException e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
@@ -186,13 +185,11 @@ public class SdkService extends Service{
 								public void onResponse(JSONObject t) {
 									// TODO Auto-generated method stub
 									try {
-										String code=t.getString("Code");
-										if(code.equals("200"))
-										{  
-											ActivityCacheUtils.getInstance().remove("com.tencent.mobileqq");
-											onHint("恭喜您,《" + "qq" + "》已获得奖励！继续完成下一个任务吧！");
-											return ;
-										}
+										String PackName=t.getString("PackName");					
+										String Title=t.getString("Title");
+										ActivityCacheUtils.getInstance().remove(PackName);
+										onHint("恭喜您,《" + Title + "》已获得奖励！继续完成下一个任务吧！");
+										return;
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
