@@ -13,6 +13,7 @@ import com.erm.integralwall.core.encrypt.RSACodeHelper;
 import com.erm.integralwall.core.net.IResponseListener;
 import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
+import com.erm.integralwall.ui.MainActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -150,6 +151,12 @@ public class NetManager {
 			if(map.containsKey(pagekage)){
 				String AdsId = map.get(pagekage);
 				notifyServerWhenInstalled(AdsId, null);
+				
+				if(Constant.DEBUG){
+					Intent intent = new Intent(MainActivity.ENABLE_SERVICE_TO_CHECKED_TASK);
+					intent.putExtra(MainActivity.TASK_ID, AdsId);
+					mReference.get().sendBroadcast(intent);
+				}
 			}
 		}
 	}

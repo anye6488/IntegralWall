@@ -6,6 +6,8 @@ package com.erm.integralwall.core;
  */
 
 public class Constant {
+	public static final boolean DEBUG = true;
+	
     public static final String VERSION = "1.2.1";//版本
 
     // 秘钥

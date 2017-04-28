@@ -38,6 +38,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.telephony.SmsMessage;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,6 +49,9 @@ import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
+	
+	public static final String ENABLE_SERVICE_TO_CHECKED_TASK = "enable_service_to_checked_task";
+	public static final String TASK_ID = "task_id";
 	
 	private TextView mAdverts = null;
 	private ListView mAdvertListView;
@@ -338,8 +342,25 @@ public class MainActivity extends Activity {
 				NetManager.getInstance().cancel("http://gdown.baidu.com/data/wisegame/02ba8a69a5a792b1/QQ_500.apk");
 			}
 		});*/
+		
+		registerReceiver(mTaskBroadcastReceiver, new IntentFilter(ENABLE_SERVICE_TO_CHECKED_TASK));
 	}
 
+	/**开启任务监测*/
+	private BroadcastReceiver mTaskBroadcastReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(null != intent){
+				String task = intent.getStringExtra(TASK_ID);
+				if(!TextUtils.isEmpty(task))
+					MainActivity.this.startID(task);
+			}
+		}
+		
+	};
+	
    
 	/**
 	 * 广告id
@@ -532,6 +553,9 @@ public class MainActivity extends Activity {
 			unregisterReceiver(receiver);
 		}
 		NetManager.getInstance().cancelAll();
+		
+		unregisterReceiver(mTaskBroadcastReceiver);
+		mTaskBroadcastReceiver = null;
 	}
 	
 }
