@@ -140,6 +140,11 @@ public class NetManager {
 		if(!TextUtils.isEmpty(advertID)){
 			/**if use sdk inner cache*/
 			notifyServerWhenInstalled(advertID, null);
+			if(Constant.DEBUG){
+				Intent intent = new Intent(MainActivity.ENABLE_SERVICE_TO_CHECKED_TASK);
+				intent.putExtra(MainActivity.TASK_ID, advertID);
+				mReference.get().sendBroadcast(intent);
+			}
 		} else {
 			/**Skip if listener or callback is not null,else do nothing*/
 			if(null == mApkInstalledListener || null == mApkInstalledListener.getMapOfPakageAndAdsID()){
