@@ -226,7 +226,6 @@ public class NetManager {
 		if(null != mNetOperator){
 			Map<String, String> map = mFormParams.getBaseParamsMap();
 			map.put(Constant.ADVERTS_ID, adsID);
-			map.put(Constant.IMEI, "99000828419910");
 			mNetOperator.fetchJsonByRequestParams(Constant.FETCH_TASK_TIME_URL, Utils.transitionObj2JsonString(map), listener);
 		} else {
 			throw new IllegalArgumentException();
