@@ -379,6 +379,8 @@ public class MainActivity extends Activity {
 						try {
 							String code = t.getString("Code");
 							if (code.equals("200")) {
+								String State = t.getString("State");
+								if(!State.equals("1")){
 								Gson gson = new Gson();
 								GetAdsTimeBean gTimeBean = gson.fromJson(
 										t.toString(), GetAdsTimeBean.class);
@@ -388,6 +390,9 @@ public class MainActivity extends Activity {
 										gTimeBean.getTitile(),
 										gTimeBean.getRegisterState(),
 										gTimeBean.getTaskIntro());
+								}else{
+									Toast.makeText(getApplicationContext(), "任务已完成",  Toast.LENGTH_SHORT).show();	
+								}
 							
 							}else{
 								Toast.makeText(getApplicationContext(), "广告id有误",  Toast.LENGTH_SHORT).show();
