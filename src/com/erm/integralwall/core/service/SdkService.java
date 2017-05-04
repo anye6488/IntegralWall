@@ -140,7 +140,7 @@ public class SdkService extends Service{
 										// TODO Auto-generated method stub
 										try {
 											String PackName=t.getString("PackName");					
-											String Title=t.getString("Title");
+											String Title=t.getString("Titile");
 											ActivityCacheUtils.getInstance().remove(PackName);
 											onHint("恭喜您,《" + Title + "》已获得奖励！继续完成下一个任务吧！");
 											return ;
