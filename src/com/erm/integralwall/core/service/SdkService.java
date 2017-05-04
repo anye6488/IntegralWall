@@ -100,9 +100,11 @@ public class SdkService extends Service {
 			} else {
 				packageName = getCurrentPkgName19(mContext);
 			}
+			// Android5.1.1的版本，拿不到包名
 			if (packageName == null || packageName.trim().equals("")) {
-				packageName = Utils.getForegroundApp();
-				if (packageName == null) {
+				packageName = Utils.getTopRunningPkgNameAboveAndroidL2(
+						getApplicationContext(), 1000 * 100);
+				if (packageName == null || packageName.trim().equals("")) {
 					return;
 				}
 			}
