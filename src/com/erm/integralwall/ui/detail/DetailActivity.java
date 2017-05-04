@@ -112,6 +112,7 @@ public class DetailActivity extends Activity{
 					@Override
 					public void onErrorResponse(VolleyError error) {
 						// TODO Auto-generated method stub
+						Log.d("ArMn", "error msg: " + error);
 					}
 					
 					@Override
