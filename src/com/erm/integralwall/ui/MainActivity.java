@@ -68,12 +68,20 @@ public class MainActivity extends Activity {
 		NetManager.getInstance().inject(this, null);
 		// 启动监听
 		registerScreenActionReceiver();
-		if (!Utils.hasEnable(getApplicationContext())) {
-			Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-			intent.setComponent(new ComponentName("com.android.settings",
-					"com.android.settings.Settings$SecuritySettingsActivity"));
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(intent);
+		String packageName;
+		packageName=Utils.Istoppackagenull(getApplicationContext());
+		if(packageName == null || packageName.trim().equals(""))
+		{
+			if(!Utils.hasEnable(getApplicationContext()))
+			{
+				Toast.makeText(getApplicationContext(), "请打开安全里面使用权限",
+						Toast.LENGTH_LONG ).show();
+				Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+				intent.setComponent(new ComponentName("com.android.settings",
+						"com.android.settings.Settings$SecuritySettingsActivity"));
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+			}
 		}
 		mAdvertListView = (ListView) findViewById(R.id.ads_listview);
 		mAdvertsAdapter = new AdvertsAdapter(this);

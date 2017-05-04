@@ -95,20 +95,7 @@ public class SdkService extends Service {
 			// 5.0系统的拿包不一样
 			// 版本1.0.8加上
 			String packageName = "";
-			if (Build.VERSION.SDK_INT > 19) {
-				packageName = getCurrentPkgName20(mContext);
-			} else {
-				packageName = getCurrentPkgName19(mContext);
-			}
-			// Android5.1.1的版本，拿不到包名
-			if (packageName == null || packageName.trim().equals("")) {
-				packageName = Utils.getTopRunningPkgNameAboveAndroidL2(
-						getApplicationContext(), 1000 * 100);
-				if (packageName == null || packageName.trim().equals("")) {
-					return;
-				}
-			}
-			// Android5.1.1的版本，拿不到包名
+			packageName=Utils.Istoppackagenull(getApplicationContext());
 			if (packageName == null || packageName.trim().equals("")) {
 				return;
 			} else {
@@ -149,6 +136,7 @@ public class SdkService extends Service {
 							adInfo.getAdId());
 				}
 				adInfo.setAlertFlag(true);// 提示之后，不再提示
+				adInfo.setOpenFlag(true);
 				boolean isfinish = false;
 				int taskTime = adInfo.getTaskTime();
 				// 广告目前已记录的时长
@@ -214,12 +202,16 @@ public class SdkService extends Service {
 
 					}
 				}
-				// 打开提示，若未提示，则提示之
-				if (adInfo.isOpenFlag()) {
-					adInfo.setOpenFlag(false);// 提示之后，不再提示
-					onHint(adInfo.getTaskInfo() + " 即可获得奖励");
-				}
+		
 				if (taskTime > 0) {// 任务时间不能为0
+					if(Time>0&&Time%5==0)
+					{
+						// 打开提示，若未提示，则提示之
+						if (adInfo.isOpenFlag()) {
+							adInfo.setOpenFlag(false);// 提示之后，不再提示
+							onHint(adInfo.getTaskInfo() + " 即可获得奖励");
+						}
+					}
 					// 完成时间通知服务器
 					if (Time >= Integer.valueOf(taskTime)) {
 						NetManager.getInstance().notifyServerWhenTaskFinished(
@@ -289,18 +281,6 @@ public class SdkService extends Service {
 
 	}
 
-	/**
-	 * 5.0以下系统
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public String getCurrentPkgName19(Context context) {
-		ActivityManager mActivityManager = (ActivityManager) context
-				.getSystemService("activity");
-		ComponentName topActivity = mActivityManager.getRunningTasks(1).get(0).topActivity;
-		return topActivity.getPackageName();
-	}
 
 	/**
 	 * 5.0以下系统
@@ -315,50 +295,5 @@ public class SdkService extends Service {
 		return topActivity.getClassName();
 	}
 
-	/**
-	 * 5.0以上系统
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public String getCurrentPkgName20(Context context) {
-		ActivityManager.RunningAppProcessInfo currentInfo = null;
-		Field field = null;
-		int START_TASK_TO_FRONT = 2;
-		String pkgName = "";
-		try {
-			field = ActivityManager.RunningAppProcessInfo.class
-					.getDeclaredField("processState");
-			ActivityManager am = (ActivityManager) context
-					.getSystemService(Context.ACTIVITY_SERVICE);
-			List appList = am.getRunningAppProcesses();
-			// ActivityManager.RunningAppProcessInfo app : appList
-			if (appList != null) {
-				for (int i = 0; i < appList.size(); i++) {
-					ActivityManager.RunningAppProcessInfo app = (RunningAppProcessInfo) appList
-							.get(i);
-					if (app.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-						Integer state = null;
-						try {
-							state = field.getInt(app);
-							if (state != null && state == START_TASK_TO_FRONT) {
-								currentInfo = app;
-								break;
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-			if (currentInfo != null) {
-				pkgName = currentInfo.processName;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// pkgName = printForegroundTask(context) ;
-		return pkgName;
-	}
 
 }
