@@ -30,7 +30,8 @@ import android.widget.Toast;
 public class SdkService extends Service {
 	private Timer mTimer;
 	public static final int FOREGROUND_ID = 0;
-
+    public static final int TipTime=60*15;
+    private static final String action="com.erm.task";
 	/**
 	 * 计时器
 	 */
@@ -166,6 +167,7 @@ public class SdkService extends Service {
 															ActivityCacheUtils
 																	.getInstance()
 																	.remove(PackName);
+															setfinishUI(PackName,Title);
 															onHint("恭喜您,《"
 																	+ Title
 																	+ "》已获得奖励！继续完成下一个任务吧！");
@@ -204,7 +206,7 @@ public class SdkService extends Service {
 				}
 		
 				if (taskTime > 0) {// 任务时间不能为0
-					if(Time>0&&Time%5==0)
+					if(Time>0&&Time%TipTime==0)
 					{
 						// 打开提示，若未提示，则提示之
 						if (adInfo.isOpenFlag()) {
@@ -227,6 +229,7 @@ public class SdkService extends Service {
 													.getString("Titile");
 											ActivityCacheUtils.getInstance()
 													.remove(PackName);
+											setfinishUI(PackName,Title);
 											onHint("恭喜您,《" + Title
 													+ "》已获得奖励！继续完成下一个任务吧！");
 											return;
@@ -261,6 +264,19 @@ public class SdkService extends Service {
 
 		}
 
+	
+	/**
+	 * 完成任务发送广播由开发者设置ui
+	 * @param packname 完成任务的包名
+	 * @param titile 完成任务的app
+	 */
+	 private void setfinishUI(String packname,String titile)
+	 {
+			Intent intent=new Intent(action);
+			intent.putExtra("packname", packname);
+			intent.putExtra("titile", titile);
+			sendBroadcast(intent);
+	 }
 		/**
 		 * 弹出黑框提示
 		 */
