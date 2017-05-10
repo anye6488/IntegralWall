@@ -75,43 +75,43 @@ public class Utils {
 	}
 
 
-	private static String getTopRunningPkgNameAboveAndroidL2(Context context,
-			long time_ms) {
-
-		// 通过Android 5.0 之后提供的新api来获取最近一段时间内的应用的相关信息
-		String topPackageName = null;
-
-		if (Build.VERSION.SDK_INT >= 21) {
-
-			try {
-				// 根据最近time_ms毫秒内的应用统计信息进行排序获取当前顶端的包名
-				long time = System.currentTimeMillis();
-				UsageStatsManager usage = (UsageStatsManager) context
-						.getSystemService("usagestats");
-				List<UsageStats> usageStatsList = usage.queryUsageStats(
-						UsageStatsManager.INTERVAL_BEST, time - time_ms, time);
-				if (usageStatsList != null && usageStatsList.size() > 0) {
-					SortedMap<Long, UsageStats> runningTask = new TreeMap<Long, UsageStats>();
-					for (UsageStats usageStats : usageStatsList) {
-						runningTask.put(usageStats.getLastTimeUsed(),
-								usageStats);
-					}
-					if (runningTask.isEmpty()) {
-						return null;
-					}
-					topPackageName = runningTask.get(runningTask.lastKey())
-							.getPackageName();
-					Log.i("test", "##当前顶端应用包名:" + topPackageName);
-				}
-			}
-
-			catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-
-		return topPackageName;
-	}
+//	private static String getTopRunningPkgNameAboveAndroidL2(Context context,
+//			long time_ms) {
+//
+//		// 通过Android 5.0 之后提供的新api来获取最近一段时间内的应用的相关信息
+//		String topPackageName = null;
+//
+//		if (Build.VERSION.SDK_INT >= 21) {
+//
+//			try {
+//				// 根据最近time_ms毫秒内的应用统计信息进行排序获取当前顶端的包名
+//				long time = System.currentTimeMillis();
+//				UsageStatsManager usage = (UsageStatsManager) context
+//						.getSystemService("usagestats");
+//				List<UsageStats> usageStatsList = usage.queryUsageStats(
+//						UsageStatsManager.INTERVAL_BEST, time - time_ms, time);
+//				if (usageStatsList != null && usageStatsList.size() > 0) {
+//					SortedMap<Long, UsageStats> runningTask = new TreeMap<Long, UsageStats>();
+//					for (UsageStats usageStats : usageStatsList) {
+//						runningTask.put(usageStats.getLastTimeUsed(),
+//								usageStats);
+//					}
+//					if (runningTask.isEmpty()) {
+//						return null;
+//					}
+//					topPackageName = runningTask.get(runningTask.lastKey())
+//							.getPackageName();
+//					Log.i("test", "##当前顶端应用包名:" + topPackageName);
+//				}
+//			}
+//
+//			catch (Throwable e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		return topPackageName;
+//	}
 	
 	 public static  boolean hasEnable(Context context){
 	     if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){   // 如果大于等于5.0 再做判断
@@ -309,10 +309,10 @@ public class Utils {
 			{
 				packageName=Utils.getForegroundApp();
 			}
-			if (packageName == null) {
-				packageName = Utils.getTopRunningPkgNameAboveAndroidL2(
-						mContext, 1000 * 100);
-			}
+//			if (packageName == null) {
+//				packageName = Utils.getTopRunningPkgNameAboveAndroidL2(
+//						mContext, 1000 * 100);
+//			}
 			return packageName;
 			
 		}

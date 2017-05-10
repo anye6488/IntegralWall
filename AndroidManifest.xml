@@ -15,10 +15,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
 
     <application
         android:allowBackup="true"
@@ -38,7 +37,6 @@
         <activity
             android:name="com.erm.integralwall.ui.detail.DetailActivity"
             android:screenOrientation="portrait" />
-
         <receiver android:name="com.erm.integralwall.core.receiver.AppReceiver" >
             <intent-filter>
 

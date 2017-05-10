@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.erm.integralwall.R;
 import com.erm.integralwall.R.id;
 import com.erm.integralwall.R.layout;
+import com.erm.integralwall.core.AppTaskMananger;
 import com.erm.integralwall.core.IApkInstalledListener;
 import com.erm.integralwall.core.NetManager;
 import com.erm.integralwall.core.Utils;
@@ -38,6 +39,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
@@ -57,32 +59,14 @@ public class MainActivity extends Activity {
 	private TextView mAdverts = null;
 	private ListView mAdvertListView;
 	private AdvertsAdapter mAdvertsAdapter;
-	// 是否退出
-	private boolean isBind = false;
-	private bineConnection bine;
-
+	private static PowerManager.WakeLock wakeLock;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		NetManager.getInstance().inject(this, null);
 		// 启动监听
-		registerScreenActionReceiver();
-		String packageName;
-		packageName=Utils.Istoppackagenull(getApplicationContext());
-		if(packageName == null || packageName.trim().equals(""))
-		{
-			if(!Utils.hasEnable(getApplicationContext()))
-			{
-				Toast.makeText(getApplicationContext(), "请打开安全里面使用权限",
-						Toast.LENGTH_LONG ).show();
-				Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-				intent.setComponent(new ComponentName("com.android.settings",
-						"com.android.settings.Settings$SecuritySettingsActivity"));
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
-			}
-		}
+//		AppTaskMananger.registerScreenActionReceiver(this);
 		mAdvertListView = (ListView) findViewById(R.id.ads_listview);
 		mAdvertsAdapter = new AdvertsAdapter(this);
 		mAdvertListView.setAdapter(mAdvertsAdapter);
@@ -313,202 +297,12 @@ public class MainActivity extends Activity {
 			if (null != intent) {
 				String task = intent.getStringExtra(TASK_ID);
 				if (!TextUtils.isEmpty(task))
-					MainActivity.this.startID(task);
+					AppTaskMananger.startID(task, context);
 			}
 		}
 
 	};
 
-	/**
-	 * 广告id
-	 * 
-	 * @param ID
-	 */
-	public void startID(String ID) {
-
-		NetManager.getInstance().fetchTaskTimeByAdsID(ID,
-				new IResponseListener<JSONObject>() {
-
-					@Override
-					public void onResponse(JSONObject t) {
-						// TODO Auto-generated method stub
-						try {
-							String code = t.getString("Code");
-							if (code.equals("200")) {
-								String State = t.getString("State");
-								if (!State.equals("1")) {
-									Gson gson = new Gson();
-									GetAdsTimeBean gTimeBean = gson.fromJson(
-											t.toString(), GetAdsTimeBean.class);
-									startService(gTimeBean.getPackName(),
-											Integer.valueOf(gTimeBean
-													.getAdsId()), Integer
-													.valueOf(gTimeBean
-															.getTime()),
-											gTimeBean.getTitile(), gTimeBean
-													.getRegisterState(),
-											gTimeBean.getTaskIntro());
-								} else {
-									Toast.makeText(getApplicationContext(),
-											"任务已完成", Toast.LENGTH_SHORT).show();
-								}
-
-							} else {
-								Toast.makeText(getApplicationContext(),
-										"广告id有误", Toast.LENGTH_SHORT).show();
-							}
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						// TODO Auto-generated method stub
-						Toast.makeText(getApplicationContext(), "系统故障",
-								Toast.LENGTH_SHORT).show();
-					}
-
-					@Override
-					public void cancel() {
-						// TODO Auto-generated method stub
-
-					}
-
-				});
-
-	}
-
-	/**
-	 * 
-	 * @param packagename
-	 *            包名
-	 * @param adId
-	 *            广告id
-	 * @param tasktime
-	 *            任务时间
-	 * @param appname
-	 *            app名字
-	 * @param is_register
-	 *            注册轨迹
-	 * @param task
-	 *            任务
-	 */
-	private void startService(String packagename, Integer adId, int tasktime,
-			String appname, String is_register, String task) {
-		//
-		if (Utils.isAppInstalled(getApplicationContext(), packagename)) { // 初始化监听数据
-			AdInfo adinfo = new AdInfo();
-			adinfo.setAdId(adId);
-			adinfo.setAppName(appname);
-			adinfo.setTaskTime(tasktime);
-			adinfo.setPackageName(packagename);
-			adinfo.setTaskInfo(task);
-			adinfo.setOpenFlag(true); // 任务详情提示
-			adinfo.setAlertFlag(true); // 任务未完成提示
-			if (!is_register.equals("0") && !is_register.trim().equals("")) {
-				adinfo.setRegister(true);
-			} else {
-				adinfo.setRegister(false);
-			}
-			// 若为注册，则监听Activity活动路径
-			if (adinfo.isRegister()) {
-				if (is_register != null && !is_register.trim().equals("")) {
-					String[] array = is_register.split(";");
-					ArrayList<String> list = new ArrayList<String>();
-					for (String str : array) {
-						list.add(str);
-					}
-					adinfo.setActivitys(list);
-				}
-			}
-			ActivityCacheUtils.getInstance().addAdInfo(packagename, adinfo);
-			ActivityCacheUtils.getInstance().setLatestPackName(packagename); // 最近打开包名
-			ActivityCacheUtils.getInstance().setLatestAdId(
-					Integer.valueOf(adId)); // 最近打开广告ID
-			PackageManager packageManager = getPackageManager();
-			PackageInfo pi = null;
-			try {
-				pi = packageManager.getPackageInfo(packagename, 0);
-
-				Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-				resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-				resolveIntent.setPackage(pi.packageName);
-
-				List<ResolveInfo> apps = packageManager.queryIntentActivities(
-						resolveIntent, 0);
-
-				ResolveInfo ri = apps.iterator().next();
-				if (ri != null) {
-					String className = ri.activityInfo.name;
-					Intent intent = new Intent(Intent.ACTION_MAIN);
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					ComponentName cn = new ComponentName(packagename, className);
-					intent.setComponent(cn);
-					startActivity(intent);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			Intent startservice = new Intent(this, SdkService.class);
-			isBind = bindService(startservice, bine = new bineConnection(),
-					BIND_AUTO_CREATE);
-		} else {
-			Toast.makeText(getApplicationContext(), "沒找到对应的app",
-					Toast.LENGTH_SHORT).show();
-		}
-
-	}
-
-	/**
-	 * 
-	 * 监听开锁瓶，短信。
-	 **/
-	private void registerScreenActionReceiver() {
-		final IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		filter.addAction(Intent.ACTION_SCREEN_ON);
-		filter.addAction(Intent.ACTION_USER_PRESENT);
-		registerReceiver(receiver, filter);
-	}
-
-	private final BroadcastReceiver receiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-
-			if ("android.intent.action.SCREEN_OFF".equals(intent.getAction())) { // 锁屏
-				if (isBind) {
-					unbindService(bine);
-					isBind = false;
-				}
-			}
-			if ("android.intent.action.USER_PRESENT".equals(intent.getAction())) { // 解锁
-				Intent startservice = new Intent(MainActivity.this,
-						SdkService.class);
-				isBind = bindService(startservice, bine = new bineConnection(),
-						BIND_AUTO_CREATE);
-			}
-
-		}
-	};
-
-	/**
-	 * 
-	 * @author lijun
-	 * 
-	 */
-	private class bineConnection implements ServiceConnection {
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-		}
-	}
 
 	/**
 	 * 关闭服务，停止监听
@@ -517,13 +311,6 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		if (isBind) {
-			unbindService(bine);
-			isBind = false;
-		}
-		if (receiver != null) {
-			unregisterReceiver(receiver);
-		}
 		NetManager.getInstance().cancelAll();
 
 		unregisterReceiver(mTaskBroadcastReceiver);

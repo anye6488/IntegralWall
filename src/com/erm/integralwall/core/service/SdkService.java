@@ -9,11 +9,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
+import com.erm.integralwall.core.AppTaskMananger;
 import com.erm.integralwall.core.NetManager;
 import com.erm.integralwall.core.Utils;
 import com.erm.integralwall.core.net.IResponseListener;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -24,6 +26,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,14 +41,15 @@ public class SdkService extends Service {
 	 * 计时器
 	 */
 	private void startTimer() {
-		if (mTimer == null) {
+          if(mTimer==null)
+          {
 			mTimer = new Timer();
 			SdkTask sdkTask = new SdkTask(this);
 			mTimer.scheduleAtFixedRate(sdkTask, 0L, 1000L);
-
-		}
+	
+          }
 	}
-
+	
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
@@ -206,7 +212,7 @@ public class SdkService extends Service {
 				}
 		
 				if (taskTime > 0) {// 任务时间不能为0
-					if(Time>0&&Time%TipTime==0)
+					if(Time>0&&Time%TipTime==0||Time==1)
 					{
 						// 打开提示，若未提示，则提示之
 						if (adInfo.isOpenFlag()) {
