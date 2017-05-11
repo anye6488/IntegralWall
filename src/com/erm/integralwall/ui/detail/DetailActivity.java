@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
 import com.erm.integralwall.R;
+import com.erm.integralwall.core.AppTaskMananger;
 import com.erm.integralwall.core.NetManager;
 import com.erm.integralwall.core.download.ResponseProgressListenerImpl;
 import com.erm.integralwall.core.net.IResponseListener;
@@ -49,7 +50,6 @@ public class DetailActivity extends Activity{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.detail_layout);
-		
 		mTaskListView = (ListView) findViewById(R.id.task_listview);
 		mTaskAdapter = new TaskAdapter(this);
 		mTaskListView.setAdapter(mTaskAdapter);

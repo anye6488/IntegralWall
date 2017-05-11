@@ -10,7 +10,8 @@ import java.util.Set;
 public class ActivityCacheUtils {
 
     private static ActivityCacheUtils instance = new ActivityCacheUtils();
-
+    //任务是否打开
+    private boolean task_open=false;
     private ActivityCacheUtils(){}
  
     public static ActivityCacheUtils getInstance() {
@@ -107,5 +108,14 @@ public class ActivityCacheUtils {
 
 	public void setLatestAdId(int latestAdId) {
 		this.latestAdId = latestAdId;
+	}
+
+	public boolean isTask_open() {
+		return task_open;
+	}
+
+	public void setTask_open(boolean task_open) {
+		this.task_open = task_open;
 	} 
+	
 }

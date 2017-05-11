@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,9 +34,6 @@ import com.google.gson.Gson;
  *
  */
 public class AppTaskMananger {
-	// 是否退出
-	private static boolean isBind = false;
-	private static bineConnection bine;
 /**
  * 启动任务
  * @param ID 任务id
@@ -168,71 +166,38 @@ public class AppTaskMananger {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Intent startservice = new Intent(context, SdkService.class);
-			isBind = context.bindService(startservice, bine = new bineConnection(),context.BIND_AUTO_CREATE);
+			opentask(context);
 		} else {
 			Toast.makeText(context, "沒找到对应的app",
 					Toast.LENGTH_SHORT).show();
 		}
 
 	}
-//	/**
-//	 * 
-//	 * 监听开锁瓶，短信。
-//	 **/
-//	public static void registerScreenActionReceiver(Context context) {
-//		final IntentFilter filter = new IntentFilter();
-//		filter.addAction(Intent.ACTION_SCREEN_OFF);
-//		filter.addAction(Intent.ACTION_SCREEN_ON);
-//		filter.addAction(Intent.ACTION_USER_PRESENT);
-//		context.getApplicationContext().registerReceiver(receiver, filter);
-//	}
-//
-//	private final static BroadcastReceiver receiver = new BroadcastReceiver() {
-//
-//		@Override
-//		public void onReceive(final Context context, final Intent intent) {
-//
-//			if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) { // 锁屏
-//				if (isBind) {
-//					context.unbindService(bine);
-//					isBind = false;
-//				}
-//			}
-//			if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) { // 解锁
-//				Intent startservice = new Intent(context,
-//						SdkService.class);
-//				isBind = context.bindService(startservice, bine = new bineConnection(),
-//						context.BIND_AUTO_CREATE);
-//			}
-//
-//		}
-//	};
-//
-	  static  class bineConnection implements ServiceConnection {
 
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-		}
 
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-		}
+	/**
+	 * 打开任务
+	 * @param context
+	 */
+	public  static void opentask(Context context)
+	{
+		ActivityCacheUtils.getInstance().setTask_open(true);
+		Intent startservice = new Intent(context,
+				SdkService.class);
+		context.startService(startservice);
+
 	}
+//
 	/**
 	 * 結束所有任務
 	 * @param context
 	 */
 	public  static void cancelTask(Context context)
 	{
-		if (isBind) {
-			context.unbindService(bine);
-			isBind = false;
-		}
-//		if (receiver != null) {
-//			context.unregisterReceiver(receiver);
-//		}
+		ActivityCacheUtils.getInstance().setTask_open(false);
+		Intent startservice = new Intent(context,
+				SdkService.class);
+		context.stopService(startservice);
 
-		
 	}
 }

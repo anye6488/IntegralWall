@@ -8,16 +8,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.json.JSONObject;
-
 import android.app.ActivityManager;
 import android.app.Service;
 import android.app.ActivityManager.RunningAppProcessInfo;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -113,18 +107,7 @@ public class Utils {
 //		return topPackageName;
 //	}
 	
-	 public static  boolean hasEnable(Context context){
-	     if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){   // 如果大于等于5.0 再做判断
-	         long ts = System.currentTimeMillis();
-	         UsageStatsManager usageStatsManager=(UsageStatsManager)context.getSystemService(Service.USAGE_STATS_SERVICE);
-	         List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, 0, ts);
-	         if (queryUsageStats == null || queryUsageStats.isEmpty()) {
-	             return false;
-	         }
-	     }
-	     return true;
-	 }
-	 
+
 	 
 		/**
 		 * 5.0以上系统
@@ -309,10 +292,7 @@ public class Utils {
 			{
 				packageName=Utils.getForegroundApp();
 			}
-//			if (packageName == null) {
-//				packageName = Utils.getTopRunningPkgNameAboveAndroidL2(
-//						mContext, 1000 * 100);
-//			}
+		
 			return packageName;
 			
 		}

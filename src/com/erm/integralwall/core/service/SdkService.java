@@ -35,7 +35,7 @@ import android.widget.Toast;
 public class SdkService extends Service {
 	private Timer mTimer;
 	public static final int FOREGROUND_ID = 0;
-    public static final int TipTime=60*15;
+    public static final int TipTime=20;
     private static final String action="com.erm.task";
 	/**
 	 * 计时器
@@ -54,13 +54,13 @@ public class SdkService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		startTimer();
 		startForeground(FOREGROUND_ID, new Notification());
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
-		startTimer();
 		return null;
 	}
 
@@ -104,9 +104,11 @@ public class SdkService extends Service {
 			String packageName = "";
 			packageName=Utils.Istoppackagenull(getApplicationContext());
 			if (packageName == null || packageName.trim().equals("")) {
-				return;
-			} else {
-				AdInfo adInfo = ActivityCacheUtils.getInstance().getAdInfo(
+				packageName = ActivityCacheUtils.getInstance()
+						.getLatestPackName();
+			} 
+				
+			AdInfo adInfo = ActivityCacheUtils.getInstance().getAdInfo(
 						packageName);
 				if (null == adInfo) {
 					String latestPackName = ActivityCacheUtils.getInstance()
@@ -266,7 +268,7 @@ public class SdkService extends Service {
 						adInfo.setExeTime(Time); // 设置任务已体验时间
 					}
 				}
-			}
+			
 
 		}
 

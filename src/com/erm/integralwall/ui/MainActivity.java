@@ -65,8 +65,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		NetManager.getInstance().inject(this, null);
-		// 启动监听
-//		AppTaskMananger.registerScreenActionReceiver(this);
+		AppTaskMananger.opentask(this);
 		mAdvertListView = (ListView) findViewById(R.id.ads_listview);
 		mAdvertsAdapter = new AdvertsAdapter(this);
 		mAdvertListView.setAdapter(mAdvertsAdapter);
@@ -312,7 +311,7 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		NetManager.getInstance().cancelAll();
-
+        AppTaskMananger.cancelTask(this);
 		unregisterReceiver(mTaskBroadcastReceiver);
 		mTaskBroadcastReceiver = null;
 	}
