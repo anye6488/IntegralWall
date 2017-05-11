@@ -235,12 +235,16 @@ public class NetManager {
 	 * 文件下载，如果存在就直接安装,如果安装过则直接打开.
 	 * @param url
 	 */
-	public void openOrDownload(String url, String path, String fileName, String packageName, IResponseProgressListener listener, boolean install){
+	public void openOrDownload(String url, String path, String fileName, String packageName, IResponseProgressListener listener, boolean install, String adsID){
 		if(!TextUtils.isEmpty(packageName) && null !=  mReference && null != mReference.get()){
 			PackageManager packageManager = mReference.get().getPackageManager();
 			Intent intent = packageManager.getLaunchIntentForPackage(packageName);
 			if(null != intent){
 				mReference.get().startActivity(intent);
+				//---如果是安装则直接打开，并且启动试用计时器.
+				Intent intentTimer = new Intent(MainActivity.ENABLE_SERVICE_TO_CHECKED_TASK);
+				intentTimer.putExtra(MainActivity.TASK_ID, adsID);
+				mReference.get().sendBroadcast(intent);
 				return;
 			}
 		}

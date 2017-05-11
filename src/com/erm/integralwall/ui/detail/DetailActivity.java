@@ -154,7 +154,7 @@ public class DetailActivity extends Activity{
 				// TODO Auto-generated method stub
 				Toast.makeText(DetailActivity.this, message, Toast.LENGTH_LONG).show();
 			}
-		}, true);
+		}, true, String.valueOf(mAdvertID));
 	}
 	
 	@Override
