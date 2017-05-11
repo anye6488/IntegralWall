@@ -138,7 +138,10 @@ public class AppTaskMananger {
 					adinfo.setActivitys(list);
 				}
 			}
+			if(ActivityCacheUtils.getInstance().get(packagename)==null)
+			{
 			ActivityCacheUtils.getInstance().addAdInfo(packagename, adinfo);
+			}
 			ActivityCacheUtils.getInstance().setLatestPackName(packagename); // 最近打开包名
 			ActivityCacheUtils.getInstance().setLatestAdId(
 					Integer.valueOf(adId)); // 最近打开广告ID
