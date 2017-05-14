@@ -208,8 +208,9 @@ public class SdkService extends Service {
 												});
 
 							}
+							return;
 						}
-
+             
 					}
 				}
 		
