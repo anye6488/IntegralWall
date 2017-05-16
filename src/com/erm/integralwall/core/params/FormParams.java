@@ -57,7 +57,7 @@ public class FormParams {
     public Map<String, String> getBaseParamsMap(){
     	HashMap<String,String> map = new HashMap<String, String>();
 		map.put(Constant.ADP_CODE, Constant.APP_CODE);
-		map.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
+		map.put(Constant.IMEI,mPhoneInfo.getPhoneIMEI());
 		return map;
     }
     
