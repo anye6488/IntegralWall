@@ -176,9 +176,9 @@ public class SdkService extends Service {
 																	.getInstance()
 																	.remove(PackName);
 															setfinishUI(PackName,Title);
-															onHint("恭喜您,《"
-																	+ Title
-																	+ "》已获得奖励！继续完成下一个任务吧！");
+//															onHint("恭喜您,《"
+//																	+ Title
+//																	+ "》已获得奖励！继续完成下一个任务吧！");
 															return;
 
 														} catch (JSONException e) {
@@ -208,8 +208,9 @@ public class SdkService extends Service {
 												});
 
 							}
+							return;
 						}
-
+             
 					}
 				}
 		
@@ -238,8 +239,8 @@ public class SdkService extends Service {
 											ActivityCacheUtils.getInstance()
 													.remove(PackName);
 											setfinishUI(PackName,Title);
-											onHint("恭喜您,《" + Title
-													+ "》已获得奖励！继续完成下一个任务吧！");
+//											onHint("恭喜您,《" + Title
+//													+ "》已获得奖励！继续完成下一个任务吧！");
 											return;
 										} catch (JSONException e) {
 											// TODO Auto-generated catch block
@@ -276,13 +277,13 @@ public class SdkService extends Service {
 	/**
 	 * 完成任务发送广播由开发者设置ui
 	 * @param packname 完成任务的包名
-	 * @param titile 完成任务的app
+	 * @param title 完成任务的app
 	 */
-	 private void setfinishUI(String packname,String titile)
+	 private void setfinishUI(String packname,String title)
 	 {
 			Intent intent=new Intent(action);
 			intent.putExtra("packname", packname);
-			intent.putExtra("titile", titile);
+			intent.putExtra("title", title);
 			sendBroadcast(intent);
 	 }
 		/**

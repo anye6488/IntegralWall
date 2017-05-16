@@ -48,8 +48,8 @@ public class AppTaskMananger {
 					public void onResponse(JSONObject t) {
 						// TODO Auto-generated method stub
 						try {
-							String code = t.getString("Code");
-							if (code.equals("200")) {
+							int code = t.getInt("Code");
+							if (code==200) {
 								String State = t.getString("State");
 								if (!State.equals("1")) {
 									Gson gson = new Gson();
