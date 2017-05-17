@@ -3,9 +3,12 @@ package com.erm.integralwall.core.params;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.erm.integralwall.core.Constant;
+import com.google.gson.JsonArray;
 
 /**
  * 作者：liemng on 2017/3/31
@@ -28,26 +31,37 @@ public class FormParams {
      * 获取广告列表所需的部分参数
      * @return
      */
-    public Map<String, String> getAdsListParamsMap(String other){
-		HashMap<String,String> map = new HashMap<String, String>();
-		map.put(Constant.ADP_CODE, Constant.APP_CODE);
-		map.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
-		map.put(Constant.IP, mPhoneInfo.getIPAddress());
-		map.put(Constant.SDK_VERSION, Constant.SDK_VERSION_CODE);
-		map.put(Constant.IMSI, mPhoneInfo.getPhoneIMSI());
-		map.put(Constant.ANDROID_ID, mPhoneInfo.getPhoneID());
-		map.put(Constant.SYSTEM_VERSION, mPhoneInfo.getPhoneVersion());
-		map.put(Constant.MODEL, mPhoneInfo.getPhoneModels());
-		map.put(Constant.MAC, mPhoneInfo.getPhoneMAC());
-		map.put(Constant.OPERATOR, mPhoneInfo.getOperators());
-		map.put(Constant.NETTYPE, mPhoneInfo.getNetWorkType());
-		map.put(Constant.BRAND, mPhoneInfo.getPhoneBrand());
-		map.put(Constant.RESOLUTION, mPhoneInfo.getResolution());
-		map.put(Constant.OTHER, TextUtils.isEmpty(other) ? "ArMn" : other);
+    public String getAdsListParamsMap(String other){
+    	
+    	String retVal = "{}";
+    	
+		//--- 'true' get all install package, but not system app.
+    	JSONArray jsonArray =  mPhoneInfo.getAllAppsPackage(true);
+    	
+		JSONObject jsonObj = new JSONObject();
+		try {
+			jsonObj.put(Constant.PACKAGE, jsonArray);
+			jsonObj.put(Constant.ADP_CODE, Constant.APP_CODE);
+			jsonObj.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
+			jsonObj.put(Constant.IP, mPhoneInfo.getIPAddress());
+			jsonObj.put(Constant.SDK_VERSION, Constant.SDK_VERSION_CODE);
+			jsonObj.put(Constant.IMSI, mPhoneInfo.getPhoneIMSI());
+			jsonObj.put(Constant.ANDROID_ID, mPhoneInfo.getPhoneID());
+			jsonObj.put(Constant.SYSTEM_VERSION, mPhoneInfo.getPhoneVersion());
+			jsonObj.put(Constant.MODEL, mPhoneInfo.getPhoneModels());
+			jsonObj.put(Constant.MAC, mPhoneInfo.getPhoneMAC());
+			jsonObj.put(Constant.OPERATOR, mPhoneInfo.getOperators());
+			jsonObj.put(Constant.NETTYPE, mPhoneInfo.getNetWorkType());
+			jsonObj.put(Constant.BRAND, mPhoneInfo.getPhoneBrand());
+			jsonObj.put(Constant.RESOLUTION, mPhoneInfo.getResolution());
+			jsonObj.put(Constant.OTHER, TextUtils.isEmpty(other) ? "ArMn" : other);
+			retVal = jsonObj.toString();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		//--- 'false' get all install package, but not system app.
-		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
-        return map;
+        return retVal;
     }
     
     /**
@@ -61,20 +75,20 @@ public class FormParams {
 		return map;
     }
     
-    /**
-     * 获取广告详情所需的部分参数
-     * @return
-     */
-    public Map<String, String> getAdsDetailParamsMap(){
-		HashMap<String,String> map = new HashMap<String, String>();
-		map.put(Constant.ADP_CODE, Constant.APP_CODE);
-		map.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
-		
-		//---get all install package, but not system app.
-		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
-		
-        return map;
-    }
+//    /**
+//     * 获取广告详情所需的部分参数
+//     * @return
+//     */
+//    public Map<String, String> getAdsDetailParamsMap(){
+//		HashMap<String,String> map = new HashMap<String, String>();
+//		map.put(Constant.ADP_CODE, Constant.APP_CODE);
+//		map.put(Constant.IMEI, mPhoneInfo.getPhoneIMEI());
+//		
+//		//---get all install package, but not system app.
+//		map.put(Constant.PACKAGE, mPhoneInfo.getAllAppsPackage(false));
+//		
+//        return map;
+//    }
 
     public JSONObject createJsonObj(String[] _param, String[] _values) {
         JSONObject jsonObj = new JSONObject();

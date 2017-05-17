@@ -11,7 +11,7 @@ public class IntegalWallApplication extends Application{
 		// TODO Auto-generated method stub
 		super.onCreate();
 		
-		NetManager.getInstance().inject(this, null);
+//		NetManager.getInstance().inject(this, null);
 	}
 	
 }

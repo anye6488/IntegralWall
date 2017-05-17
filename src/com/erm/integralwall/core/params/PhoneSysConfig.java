@@ -4,8 +4,16 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.erm.integralwall.core.Constant;
+import com.erm.integralwall.core.Utils;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -41,35 +49,60 @@ public class PhoneSysConfig {
                 .getSystemService(context.TELEPHONY_SERVICE);
     }
     
-    public String getAllAppsPackage(boolean retain) {  
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("[");
-        PackageManager pManager = context.getPackageManager();  
-        //获取手机内所有应用  
-        List<PackageInfo> paklist = pManager.getInstalledPackages(0);  
-        for (int i = 0; i < paklist.size(); i++) {  
-            PackageInfo pak = (PackageInfo) paklist.get(i);  
-            //判断是否为非系统预装的应用程序  
-            if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0 && !retain) {  
+//    public String getAllAppsPackage(boolean retain) {  
+//        StringBuffer stringBuffer = new StringBuffer();
+//        stringBuffer.append("[");
+//    	
+//        PackageManager pManager = context.getPackageManager();  
+//        //获取手机内所有应用  
+//        List<PackageInfo> paklist = pManager.getInstalledPackages(0);  
+//        for (int i = 0; i < paklist.size(); i++) {  
+//            PackageInfo pak = (PackageInfo) paklist.get(i);  
+//            //判断是否为非系统预装的应用程序  
+//            if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0 && !retain) {  
+//                // customs applications  
+//            	stringBuffer.append(pak.packageName);
+//            	stringBuffer.append(",");
+//            }  else if(retain){
+//            	stringBuffer.append(pak.packageName);
+//            	stringBuffer.append(",");
+//            }
+//        }  
+//        /**如果查询的当前集合不为null,应该执行如下处理*/
+//        if(stringBuffer.length() > 1){
+//        	CharSequence subSequence = stringBuffer.subSequence(0, stringBuffer.length() -1);
+//        	subSequence = subSequence + "]";
+//        	return (String) subSequence;
+//        }
+//        
+//        stringBuffer.append("]");
+//        
+//        return stringBuffer.toString();  
+//    }  
+    
+    public JSONArray getAllAppsPackage(boolean retain){
+    	
+    	JSONArray jsonArray=new JSONArray();
+    	
+	    PackageManager pManager = context.getPackageManager();  
+	    //获取手机内所有应用  
+	    List<PackageInfo> paklist = pManager.getInstalledPackages(0);  
+	    for (int i = 0; i < paklist.size(); i++) {  
+	        PackageInfo pak = (PackageInfo) paklist.get(i);  
+	        if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM)<= 0 ) {  
                 // customs applications  
-            	stringBuffer.append(pak.packageName);
-            	stringBuffer.append(",");
+	        	if(retain)
+	        		jsonArray.put(pak.packageName);
             }  else {
-            	stringBuffer.append(pak.packageName);
-            	stringBuffer.append(",");
+            	jsonArray.put(pak.packageName);
             }
-        }  
-        /**如果查询的当前集合不为null,应该执行如下处理*/
-        if(stringBuffer.length() > 1){
-        	CharSequence subSequence = stringBuffer.subSequence(0, stringBuffer.length() -1);
-        	subSequence = subSequence + "]";
-        	return (String) subSequence;
-        }
-        
-        stringBuffer.append("]");
-        
-        return stringBuffer.toString();  
-    }  
+	    }  
+
+	    jsonArray.put("test1").put("test2");
+
+	   
+		return jsonArray;
+    }
     
     public String getIPAddress() {
         NetworkInfo info = ((ConnectivityManager) context
