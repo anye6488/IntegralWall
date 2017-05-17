@@ -23,7 +23,16 @@ public class AdInfo {
 	private boolean openFlag;
 	
 	private boolean alertFlag;
+	private int tryTimes;
+	
 
+	public int getTryTimes() {
+		return tryTimes;
+	}
+
+	public void setTryTimes(int tryTimes) {
+		this.tryTimes = tryTimes;
+	}
 
 	public Integer getAdId() {
 		return adId;
