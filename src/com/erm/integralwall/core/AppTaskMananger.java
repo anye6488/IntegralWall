@@ -17,6 +17,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -138,37 +139,14 @@ public class AppTaskMananger {
 					adinfo.setActivitys(list);
 				}
 			}
-			if(ActivityCacheUtils.getInstance().get(packagename)==null)
+			if(ActivityCacheUtils.getInstance().getAdInfo(packagename)==null)
 			{
 			ActivityCacheUtils.getInstance().addAdInfo(packagename, adinfo);
 			}
 			ActivityCacheUtils.getInstance().setLatestPackName(packagename); // 最近打开包名
 			ActivityCacheUtils.getInstance().setLatestAdId(
 					Integer.valueOf(adId)); // 最近打开广告ID
-			PackageManager packageManager = context.getPackageManager();
-			PackageInfo pi = null;
-			try {
-				pi = packageManager.getPackageInfo(packagename, 0);
-
-				Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-				resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-				resolveIntent.setPackage(pi.packageName);
-
-				List<ResolveInfo> apps = packageManager.queryIntentActivities(
-						resolveIntent, 0);
-
-				ResolveInfo ri = apps.iterator().next();
-				if (ri != null) {
-					String className = ri.activityInfo.name;
-					Intent intent = new Intent(Intent.ACTION_MAIN);
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					ComponentName cn = new ComponentName(packagename, className);
-					intent.setComponent(cn);
-					context.startActivity(intent);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		  Utils.openapp(context, packagename);
 			opentask(context);
 		} else {
 			Toast.makeText(context, "沒找到对应的app",
