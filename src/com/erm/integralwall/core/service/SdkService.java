@@ -148,8 +148,20 @@ public class SdkService extends Service {
 				adInfo.setOpenFlag(true);
 				boolean isfinish = false;
 				int taskTime = adInfo.getTaskTime();
+				int trytime=adInfo.getTryTimes();
 				// 广告目前已记录的时长
 				int Time = adInfo.getExeTime();
+				trytime = trytime + 1;
+				adInfo.setTryTimes(trytime);
+				
+				if(trytime>0&&trytime%TipTime==0||trytime==1)
+				{
+					// 打开提示，若未提示，则提示之
+					if (adInfo.isOpenFlag()) {
+						adInfo.setOpenFlag(false);// 提示之后，不再提示
+						onHint(adInfo.getTaskInfo() + " 即可获得奖励");
+					}
+				}
 				if (Build.VERSION.SDK_INT <= 19) {
 					if (packageName != null
 							&& packageName.equals(adInfo.getPackageName())) {
@@ -176,9 +188,9 @@ public class SdkService extends Service {
 																	.getInstance()
 																	.remove(PackName);
 															setfinishUI(PackName,Title);
-//															onHint("恭喜您,《"
-//																	+ Title
-//																	+ "》已获得奖励！继续完成下一个任务吧！");
+															onHint("恭喜您,《"
+																	+ Title
+																	+ "》已获得奖励！继续完成下一个任务吧！");
 															return;
 
 														} catch (JSONException e) {
@@ -215,14 +227,6 @@ public class SdkService extends Service {
 				}
 		
 				if (taskTime > 0) {// 任务时间不能为0
-					if(Time>0&&Time%TipTime==0||Time==1)
-					{
-						// 打开提示，若未提示，则提示之
-						if (adInfo.isOpenFlag()) {
-							adInfo.setOpenFlag(false);// 提示之后，不再提示
-							onHint(adInfo.getTaskInfo() + " 即可获得奖励");
-						}
-					}
 					// 完成时间通知服务器
 					if (Time >= Integer.valueOf(taskTime)) {
 						NetManager.getInstance().notifyServerWhenTaskFinished(
@@ -239,8 +243,8 @@ public class SdkService extends Service {
 											ActivityCacheUtils.getInstance()
 													.remove(PackName);
 											setfinishUI(PackName,Title);
-//											onHint("恭喜您,《" + Title
-//													+ "》已获得奖励！继续完成下一个任务吧！");
+											onHint("恭喜您,《" + Title
+													+ "》已获得奖励！继续完成下一个任务吧！");
 											return;
 										} catch (JSONException e) {
 											// TODO Auto-generated catch block
