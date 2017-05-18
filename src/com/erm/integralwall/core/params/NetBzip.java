@@ -9,4 +9,5 @@ import okhttp3.Call;
 public class NetBzip {
 	public Request<JSONObject> obj;
 	public Call call;
+	public String path = "";
 }

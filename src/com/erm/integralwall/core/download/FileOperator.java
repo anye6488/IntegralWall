@@ -39,6 +39,10 @@ public class FileOperator extends AbstractOperator{
 	
 	
 	public void openOrDownload(final String url, final String path,final String fileName, final IResponseProgressListener listener, final boolean install){
+		File file = new File(path);
+		if(!file.exists()){
+			file.mkdirs();
+		}
 		/**check to download file is exist?*/
 		if(TextUtils.isEmpty(path)){
 			throw new IllegalArgumentException("path argus is null....");
@@ -67,6 +71,7 @@ public class FileOperator extends AbstractOperator{
 		//---缓存
 		NetBzip netBzip = new NetBzip();
 		netBzip.call = newCall;
+		netBzip.path = (path + fileName + SUFFIX);
 		mapCache.put(url, netBzip);
 		newCall.enqueue(new Callback() {
 
@@ -197,6 +202,11 @@ public class FileOperator extends AbstractOperator{
 		if(null != mapCache && mapCache.containsKey(url)){
 			NetBzip netBzip = mapCache.remove(url);
 			netBzip.call.cancel();
+			if(!TextUtils.isEmpty(netBzip.path)){
+				File file = new File(netBzip.path);
+				if(file.exists())
+					file.delete();
+			}
 			return true;
 		}
 		
@@ -212,6 +222,11 @@ public class FileOperator extends AbstractOperator{
 				String next = iterator.next();
 				NetBzip netBzip =  mapCache.get(next);
 				netBzip.call.cancel();
+				if(!TextUtils.isEmpty(netBzip.path)){
+					File file = new File(netBzip.path);
+					if(file.exists())
+						file.delete();
+				}
 				iterator.remove();
 			}
 		}
