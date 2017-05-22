@@ -35,7 +35,7 @@ import android.widget.Toast;
 public class SdkService extends Service {
 	private Timer mTimer;
 	public static final int FOREGROUND_ID = 0;
-    public static final int TipTime=20;
+    public static final int TipTime=10;
     private static final String action="com.erm.task";
 	/**
 	 * 计时器

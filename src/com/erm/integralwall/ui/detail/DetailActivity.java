@@ -1,5 +1,6 @@
 package com.erm.integralwall.ui.detail;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -126,7 +127,10 @@ public class DetailActivity extends Activity{
 	}
 	
 	private void download(String name, String url){
-		String SDPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+		
+//		String SDPath = Environment.getExternalStorageDirectory() + "/zy/";
+		String SDPath = Environment.getExternalStorageDirectory() + "/zy/";
+		
 		NetManager.getInstance().openOrDownload(url,
 				SDPath, name, mDetailBzip.PackName, new ResponseProgressListenerImpl(DetailActivity.this) {
 			
