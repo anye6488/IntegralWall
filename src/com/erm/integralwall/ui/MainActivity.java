@@ -53,8 +53,8 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	public static final String ENABLE_SERVICE_TO_CHECKED_TASK = "enable_service_to_checked_task";
-	public static final String TASK_ID = "task_id";
+//	public static final String ENABLE_SERVICE_TO_CHECKED_TASK = "android.intent.action.check.task";
+//	public static final String TASK_ID = "task_id";
 
 	private TextView mAdverts = null;
 	private ListView mAdvertListView;
@@ -283,24 +283,24 @@ public class MainActivity extends Activity {
 		 * } });
 		 */
 
-		registerReceiver(mTaskBroadcastReceiver, new IntentFilter(
-				ENABLE_SERVICE_TO_CHECKED_TASK));
+//		registerReceiver(mTaskBroadcastReceiver, new IntentFilter(
+//				ENABLE_SERVICE_TO_CHECKED_TASK));
 	}
 
 	/** 开启任务监测 */
-	private BroadcastReceiver mTaskBroadcastReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			if (null != intent) {
-				String task = intent.getStringExtra(TASK_ID);
-				if (!TextUtils.isEmpty(task))
-					AppTaskMananger.startID(task, context);
-			}
-		}
-
-	};
+//	private BroadcastReceiver mTaskBroadcastReceiver = new BroadcastReceiver() {
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			// TODO Auto-generated method stub
+//			if (null != intent) {
+//				String task = intent.getStringExtra(TASK_ID);
+//				if (!TextUtils.isEmpty(task))
+//					AppTaskMananger.startID(task, context);
+//			}
+//		}
+//
+//	};
 
 
 	/**
@@ -312,8 +312,8 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 		NetManager.getInstance().cancelAll();
         AppTaskMananger.cancelTask(this);
-		unregisterReceiver(mTaskBroadcastReceiver);
-		mTaskBroadcastReceiver = null;
+//		unregisterReceiver(mTaskBroadcastReceiver);
+//		mTaskBroadcastReceiver = null;
 	}
 
 }

@@ -13,7 +13,7 @@ import com.erm.integralwall.core.encrypt.RSACodeHelper;
 import com.erm.integralwall.core.net.IResponseListener;
 import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
-import com.erm.integralwall.ui.MainActivity;
+import com.erm.integralwall.core.receiver.TaskBroadcastReceiver;
 
 import android.content.Context;
 import android.content.Intent;
@@ -141,8 +141,8 @@ public class NetManager {
 			/**if use sdk inner cache*/
 			notifyServerWhenInstalled(advertID, null);
 			if(Constant.DEBUG){
-				Intent intent = new Intent(MainActivity.ENABLE_SERVICE_TO_CHECKED_TASK);
-				intent.putExtra(MainActivity.TASK_ID, advertID);
+				Intent intent = new Intent(TaskBroadcastReceiver.ENABLE_SERVICE_TO_CHECKED_TASK);
+				intent.putExtra(TaskBroadcastReceiver.TASK_ID, advertID);
 				mReference.get().sendBroadcast(intent);
 			}
 		} else {
@@ -158,8 +158,8 @@ public class NetManager {
 				notifyServerWhenInstalled(AdsId, null);
 				
 				if(Constant.DEBUG){
-					Intent intent = new Intent(MainActivity.ENABLE_SERVICE_TO_CHECKED_TASK);
-					intent.putExtra(MainActivity.TASK_ID, AdsId);
+					Intent intent = new Intent(TaskBroadcastReceiver.ENABLE_SERVICE_TO_CHECKED_TASK);
+					intent.putExtra(TaskBroadcastReceiver.TASK_ID, AdsId);
 					mReference.get().sendBroadcast(intent);
 				}
 			}
@@ -242,8 +242,8 @@ public class NetManager {
 			if(null != intent){
 				mReference.get().startActivity(intent);
 				//---如果是安装则直接打开，并且启动试用计时器.
-				Intent intentTimer = new Intent(MainActivity.ENABLE_SERVICE_TO_CHECKED_TASK);
-				intentTimer.putExtra(MainActivity.TASK_ID, adsID);
+				Intent intentTimer = new Intent(TaskBroadcastReceiver.ENABLE_SERVICE_TO_CHECKED_TASK);
+				intentTimer.putExtra(TaskBroadcastReceiver.TASK_ID, adsID);
 				mReference.get().sendBroadcast(intentTimer);
 				return;
 			}

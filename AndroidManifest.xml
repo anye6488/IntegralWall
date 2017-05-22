@@ -47,6 +47,14 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+        
+        <receiver android:name="com.erm.integralwall.core.receiver.TaskBroadcastReceiver" >
+            <intent-filter>
+                
+                <action android:name="android.intent.action.check.task" />
+                
+            </intent-filter>
+        </receiver>
 
         <service android:name="com.erm.integralwall.core.service.SdkService" />
     </application>
