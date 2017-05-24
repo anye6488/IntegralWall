@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		NetManager.getInstance().inject(this, null, new FormConfig().setAppCode(Constant.APP_CODE).setOtherParam("ArMn"));
+		NetManager.getInstance().inject(this, null, new FormConfig().setAppCode(Constant.APP_CODE).setUserId("ArMn"));
 		AppTaskMananger.opentask(this);
 		mAdvertListView = (ListView) findViewById(R.id.ads_listview);
 		mAdvertsAdapter = new AdvertsAdapter(this);

@@ -57,7 +57,7 @@ public class FormParams {
 			jsonObj.put(Constant.NETTYPE, mPhoneInfo.getNetWorkType());
 			jsonObj.put(Constant.BRAND, mPhoneInfo.getPhoneBrand());
 			jsonObj.put(Constant.RESOLUTION, mPhoneInfo.getResolution());
-			jsonObj.put(Constant.OTHER, mFormConfig.getOtherParam());
+			jsonObj.put(Constant.OTHER, mFormConfig.getUserId());
 			retVal = jsonObj.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -125,7 +125,7 @@ public class FormParams {
     
     public static class FormConfig{
     	private String mAppcode = "";
-    	private String mOtherParam = "";
+    	private String mUserId = "";
     	
     	/**
     	 * 设置appcode，需要申请
@@ -142,8 +142,8 @@ public class FormParams {
     	 * @param otherParam
     	 * @return
     	 */
-    	public FormConfig setOtherParam(String otherParam){
-    		this.mOtherParam = otherParam;
+    	public FormConfig setUserId(String userId){
+    		this.mUserId = userId;
     		return this;
     	}
     	
@@ -151,8 +151,8 @@ public class FormParams {
     		return mAppcode;
     	}
     	
-    	public String getOtherParam(){
-    		return mOtherParam;
+    	public String getUserId(){
+    		return mUserId;
     	}
     }
 }
