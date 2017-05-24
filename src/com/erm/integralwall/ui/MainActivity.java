@@ -13,10 +13,12 @@ import com.erm.integralwall.R;
 import com.erm.integralwall.R.id;
 import com.erm.integralwall.R.layout;
 import com.erm.integralwall.core.AppTaskMananger;
+import com.erm.integralwall.core.Constant;
 import com.erm.integralwall.core.IApkInstalledListener;
 import com.erm.integralwall.core.NetManager;
 import com.erm.integralwall.core.Utils;
 import com.erm.integralwall.core.net.IResponseListener;
+import com.erm.integralwall.core.params.FormParams.FormConfig;
 import com.erm.integralwall.core.service.ActivityCacheUtils;
 import com.erm.integralwall.core.service.AdInfo;
 import com.erm.integralwall.core.service.SdkService;
@@ -64,7 +66,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		NetManager.getInstance().inject(this, null);
+		NetManager.getInstance().inject(this, null, new FormConfig().setAppCode(Constant.APP_CODE).setOtherParam("ArMn"));
 		AppTaskMananger.opentask(this);
 		mAdvertListView = (ListView) findViewById(R.id.ads_listview);
 		mAdvertsAdapter = new AdvertsAdapter(this);

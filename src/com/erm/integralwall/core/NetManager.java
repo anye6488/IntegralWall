@@ -13,6 +13,7 @@ import com.erm.integralwall.core.encrypt.RSACodeHelper;
 import com.erm.integralwall.core.net.IResponseListener;
 import com.erm.integralwall.core.net.NetOperator;
 import com.erm.integralwall.core.params.FormParams;
+import com.erm.integralwall.core.params.FormParams.FormConfig;
 import com.erm.integralwall.core.receiver.TaskBroadcastReceiver;
 
 import android.content.Context;
@@ -56,11 +57,11 @@ public class NetManager {
 	 * 创建该对象之后，紧接着必须调用该方法.
 	 * @param context
 	 */
-	public void inject(Context context, IApkInstalledListener listener){
+	public void inject(Context context, IApkInstalledListener listener, FormConfig formConfig){
 		/***/
 		mApkInstalledListener = listener;
 		mReference = new WeakReference<Context>(context);
-		mFormParams = new FormParams(context.getApplicationContext());
+		mFormParams = new FormParams(context.getApplicationContext(), formConfig);
 		mNetOperator = new NetOperator(context);
 		
 		mFileOperator = new FileOperator(context);
@@ -72,7 +73,7 @@ public class NetManager {
 	 */
 	public void fetchAdvertsJsonByRequestParams(IResponseListener<JSONObject> listener){
 		if(null != mNetOperator){
-			String requestParmas = mFormParams.getAdsListParamsMap("ArMn");
+			String requestParmas = mFormParams.getAdsListParamsMap();
 			Log.d(TAG, "fetchAdvertsJsonByRequestParams: " + requestParmas);
 			mNetOperator.fetchJsonByRequestParams(Constant.ADVERTS_LIST_URL, requestParmas, listener);
 		} else {
